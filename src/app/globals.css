@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #161616;
+  --color-ink-deep: #000000;
+  --color-panel: #1f1f1f;
+  --color-gold: #a78a36;
+  --color-gold-bar: #b09a54;
+  --color-bone: #f7f7f7;
+  --color-muted: #a9a9a9;
+  --font-sans: var(--font-montserrat), Arial, sans-serif;
+  --font-display: var(--font-archivo), "Archivo Black", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+}
