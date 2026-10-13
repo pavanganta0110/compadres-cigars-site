@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import CatalogViewer from "@/components/CatalogViewer";
 import PageHeading from "@/components/PageHeading";
 import { CATALOG } from "@/lib/site";
 
@@ -13,17 +13,7 @@ export default function Page() {
         <p className="text-center leading-6">
           <a href={CATALOG} download className="text-gold hover:underline">Download PDF</a>
         </p>
-        {/* Preview of the catalog's first page; opens the full PDF. */}
-        <a href={CATALOG} target="_blank" rel="noopener noreferrer" className="mx-auto mt-[59px] block max-w-[733px]" aria-label="Open the Compadres catalog (PDF)">
-          <Image
-            src="/images/catalog-preview.jpg"
-            alt="Compadres Cigars catalog cover"
-            width={1134}
-            height={1500}
-            sizes="(min-width: 768px) 733px, 100vw"
-            className="h-auto w-full"
-          />
-        </a>
+        <CatalogViewer pages={24} pdf={CATALOG} />
       </div>
     </section>
   );
