@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function Hero({ slides }: { slides: { src: string; alt: string }[] }) {
+type Slide = { src: string; alt: string; position: string };
+
+export default function Hero({ slides }: { slides: Slide[] }) {
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((n) => (n + 1) % slides.length), 5000);
@@ -11,7 +13,7 @@ export default function Hero({ slides }: { slides: { src: string; alt: string }[
   }, [slides.length]);
 
   return (
-    <div className="relative h-[420px] w-full overflow-hidden bg-ink-deep sm:h-[600px]">
+    <div className="relative h-[420px] w-full overflow-hidden bg-ink sm:h-[600px]">
       {slides.map((s, n) => (
         <Image
           key={s.src}
@@ -19,10 +21,15 @@ export default function Hero({ slides }: { slides: { src: string; alt: string }[
           alt={s.alt}
           fill
           priority={n === 0}
+          loading="eager"
+          quality={90}
           sizes="100vw"
-          className={`object-cover transition-opacity duration-1000 ${n === i ? "opacity-70" : "opacity-0"}`}
+          style={{ objectPosition: s.position }}
+          className={`object-cover transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
         />
       ))}
+      {/* Flat 25% black overlay, as on the original */}
+      <div className="absolute inset-0 bg-black/25" aria-hidden />
       <div className="absolute inset-x-0 bottom-5 flex justify-center gap-3">
         {slides.map((s, n) => (
           <button

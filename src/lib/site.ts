@@ -54,35 +54,35 @@ export const CATALOG = "/files/compadres-digital-catalog.pdf";
 
 export const MAIN_LINE = [
   {
-    name: "Robusto", size: "50 X 5", image: "/images/robusto-box.png", w: 1035, h: 1200,
+    name: "Robusto", size: "50 X 5", image: "/images/robusto-box.png", w: 1381, h: 1600,
     filler: "Cuban Seed", binder: "Dominican", wrap: "Connecticut",
     first: ["First Third: Light, airy start with a solid pull. Developing a", "sweet nutty flavor."],
     second: ["Second Third: Light to medium body flavor; maintaining", "a smooth mellow taste."],
     final: ["Final Third: Consistant medium body throughout. Smooth", "and flavorful until the end."],
   },
   {
-    name: "Belicoso", size: "50 X 5.25", image: "/images/belicoso-box.png", w: 1200, h: 913,
+    name: "Belicoso", size: "50 X 5.25", image: "/images/belicoso-box.png", w: 1600, h: 1218,
     filler: "Cuban Seed, Dominican", binder: "Dominican", wrap: "Habana",
     first: ["First Third: Sweet, earthy, slightly fruity which develops", "a smooth rich consistency."],
     second: ["Second Third: Medium body flavor; produces a medium", "pull; develops a sharpness and a little bit of fire."],
     final: ["Final Third: Hint of deep, smooth leather taste; retains its", "smoothness throughout the smoke; burns evenly and", "retains a smooth pull throughout."],
   },
   {
-    name: "Maduro Torpedo", size: "52 X 6", image: "/images/torpedo-box.png", w: 878, h: 1200,
+    name: "Maduro Torpedo", size: "52 X 6", image: "/images/torpedo-box.png", w: 1171, h: 1600,
     filler: "Cuban Seed", binder: "Cuban Seed", wrap: "Habana",
     first: ["First Third: Dry, earthy flavor, a hint of expresso; light to", "medium pull."],
     second: ["Second Third: Medium full body flavor; produces a medium", "pull; develops a sharpness and a little bit of fire."],
     final: ["Final Third: Hint of deep, rugged leather taste; burns evenly", "and retains a smooth pull throughout."],
   },
   {
-    name: "Double Maduro Toro", size: "52 X 6", image: "/images/toro-box.png", w: 1200, h: 1118,
+    name: "Double Maduro Toro", size: "52 X 6", image: "/images/toro-box.png", w: 1600, h: 1491,
     filler: "USA, Cuban Seed", binder: "Indonesia", wrap: "San Andres",
     first: ["First Third: A full body, earthy, chocolate taste with a hint", "of floral; strong, like a shot of expresso."],
     second: ["Second Third: Medium to full body flavor; produces a", "medium pull; develops a soft leather sharpness."],
     final: ["Final Third: Hint of deep, smooth leather taste; retains its", "smoothness throughout the smoke; burns evenly and", "retains a smooth pull throughout."],
   },
   {
-    name: "Gran Corona", size: "60 X 6", image: "/images/gran-corona-box.png", w: 1200, h: 1086,
+    name: "Gran Corona", size: "60 X 6", image: "/images/gran-corona-box.png", w: 1600, h: 1448,
     filler: "USA, Cuban Seed", binder: "Cuban Seed", wrap: "Habana",
     first: ["First Third: Medium to full body, smooth pull."],
     second: ["Second Third: Maintains a smooth pull, developing a rich flavor."],
