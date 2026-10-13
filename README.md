@@ -24,7 +24,7 @@ npm run lint && npx tsc --noEmit && npm run build
 - The "I AM 21 OR OLDER" button POSTs to `/api/age-verify`, which sets an HMAC-signed, HttpOnly, Secure, SameSite=Lax cookie (`<expiry>.<signature>`). Forged, tampered, malformed and expired cookies are rejected. The post-confirmation redirect only accepts same-site relative paths.
 - There is no close button; "I am under 21 — exit" leaves to `AGE_GATE_EXIT_URL`.
 - Env: `AGE_GATE_SECRET` (**required in production**; without it the site stays gated and confirming returns 500, by design), `AGE_GATE_TTL_DAYS` (default 30), `AGE_GATE_EXIT_URL`.
-- Search engines can't crawl gated pages (only `robots.txt` is open). Self-attestation is not identity verification — confirm with your merchant bank/processor and counsel whether it satisfies their requirement (some tobacco/age-restricted sales require ID or age verification at purchase/shipping, and state licensing rules apply).
+- Search engines: verified Googlebot and Bingbot (reverse+forward DNS check, cached) may read public pages and images, but not `/files/` or `/api/`. A spoofed `User-Agent` does not get through. Everyone else is gated.
 
 ## Known differences from the original site
 
