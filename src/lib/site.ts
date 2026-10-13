@@ -97,41 +97,35 @@ export const MAIN_LINE = [
   },
 ];
 
-// Rows of three, bottom-aligned, in the same order as the original gallery.
+// The gallery as on the original: three columns, tops aligned, in the original's order.
 export type GalleryImage = { file: string; w: number; h: number };
-export const GALLERY_ROWS: GalleryImage[][] = [
+export const GALLERY_COLUMNS: GalleryImage[][] = [
   [
     { file: "lion-crest-main-logo-bold-black-background.jpg", w: 1800, h: 1800 },
-    { file: "compadres-cigars-60-x-6-crop.jpg", w: 1717, h: 1800 },
-    { file: "suzannefryerphotography_compadres--2.jpg", w: 1199, h: 1800 },
-  ],
-  [
-    { file: "cardinal-box-press.jpg", w: 1800, h: 1353 },
-    { file: "compadres-cigars-pressed-crop.jpg", w: 1249, h: 1800 },
-    { file: "tobacco-leaf-crop.jpg", w: 1646, h: 1800 },
-  ],
-  [
+    { file: "cardinal-box-press.jpg", w: 2400, h: 1805 },
     { file: "suzannefryerphotography_compadres-5622.jpg", w: 1199, h: 1800 },
-    { file: "compadres-cigars-rolling-crop.jpg", w: 1593, h: 1800 },
-    { file: "robustos-lined-up-crp.jpg", w: 1147, h: 1800 },
-  ],
-  [
     { file: "suzannefryerphotography_compadres--2-1.jpg", w: 1199, h: 1800 },
-    { file: "compadres-cigars-packing-crop.jpg", w: 1047, h: 1800 },
-    { file: "img_20201203_153536.jpg", w: 1350, h: 1800 },
-  ],
-  [
     { file: "51222067379_21628b58ac_o.jpg", w: 1800, h: 1200 },
-    { file: "image-3.jpg", w: 1200, h: 1800 },
-    { file: "51220572407_05e7f6b3f1_o.jpg", w: 1199, h: 1800 },
-  ],
-  [
     { file: "cover.jpg", w: 1247, h: 1800 },
-    { file: "suzannefryerphotography_compadres-7194.jpg", w: 1800, h: 1200 },
-    { file: "suzannefryerphotography_compadres-5007.jpg", w: 1800, h: 1200 },
+    { file: "suzannefryerphotography_compadres-6152.jpg", w: 1199, h: 1800 },
   ],
   [
-    { file: "suzannefryerphotography_compadres-6152.jpg", w: 1199, h: 1800 },
+    { file: "compadres-cigars-60-x-6-crop.jpg", w: 1717, h: 1800 },
+    { file: "compadres-cigars-pressed-crop.jpg", w: 1249, h: 1800 },
+    { file: "compadres-cigars-rolling-crop.jpg", w: 1593, h: 1800 },
+    { file: "compadres-cigars-packing-crop.jpg", w: 1047, h: 1800 },
+    { file: "51220572407_05e7f6b3f1_o.jpg", w: 1199, h: 1800 },
+    { file: "suzannefryerphotography_compadres-5007.jpg", w: 1800, h: 1200 },
+    { file: "gallery-open-box-cutter.jpg", w: 2000, h: 1333 },
+    { file: "gallery-cardinal-cigars-hand.jpg", w: 1298, h: 1649 },
+  ],
+  [
+    { file: "suzannefryerphotography_compadres--2.jpg", w: 1199, h: 1800 },
+    { file: "tobacco-leaf-crop.jpg", w: 1646, h: 1800 },
+    { file: "robustos-lined-up-crp.jpg", w: 1147, h: 1800 },
+    { file: "img_20201203_153536.jpg", w: 1350, h: 1800 },
+    { file: "image-3.jpg", w: 1200, h: 1800 },
+    { file: "suzannefryerphotography_compadres-7194.jpg", w: 1800, h: 1200 },
     { file: "suzannefryerphotography_compadres-5637.jpg", w: 1199, h: 1800 },
   ],
 ];
