@@ -20,7 +20,7 @@ npm run lint && npx tsc --noEmit && npm run build
 
 ## 21+ age gate
 
-- `src/proxy.ts` runs on every request. Without a valid signed cookie (`cc_age_ok`) it redirects to `/age-gate`, including direct hits on pages, PDFs, `/_next/image`, the API and the sitemap. Open: `/age-gate`, `/api/age-verify`, `/robots.txt` and `/images/*` (Next's image optimizer fetches those internally without the cookie, so gating them breaks every image; they are product photos only).
+- `src/proxy.ts` runs on every request. Without a valid signed cookie (`cc_age_ok`) it redirects to `/age-gate`, including direct hits on pages, PDFs, `/_next/image`, the API and the sitemap. Open: `/age-gate`, `/api/age-verify`, `/robots.txt`, `/images/*` and `/_next/image` for `/images/*` URLs only (Next's image optimizer fetches those internally without the cookie, so gating them breaks every image; they are product photos only).
 - The "I AM 21 OR OLDER" button POSTs to `/api/age-verify`, which sets an HMAC-signed, HttpOnly, Secure, SameSite=Lax cookie (`<expiry>.<signature>`). Forged, tampered, malformed and expired cookies are rejected. The post-confirmation redirect only accepts same-site relative paths.
 - There is no close button; "I am under 21 — exit" leaves to `AGE_GATE_EXIT_URL`.
 - Env: `AGE_GATE_SECRET` (**required in production**; without it the site stays gated and confirming returns 500, by design), `AGE_GATE_TTL_DAYS` (default 30), `AGE_GATE_EXIT_URL`.
@@ -28,7 +28,8 @@ npm run lint && npx tsc --noEmit && npm run build
 
 ## Known differences from the original site
 
-- **Credit card fields removed.** The old Become-a-Customer form collected card numbers/CVV through a third-party widget. Card data should not be collected in a plain web form; customers choosing "Credit Card" are contacted to pay securely.
-- **Tobacco license upload** is not rebuilt (needs file storage, e.g. Supabase Storage). The form tells customers they will be contacted for it.
-- **Forms need an email provider** (`RESEND_API_KEY`, `INQUIRY_TO_EMAIL`, `INQUIRY_FROM_EMAIL`) to deliver anything.
+- **Credit card fields removed.** The old Become-a-Customer form collected card number/CVV through a third-party widget. Card data must not go through a plain form or email. The Credit Card checkbox stays (customers are contacted to pay securely). To take cards online, use a hosted payment page/link from your processor.
+- **Tobacco license upload** works by email attachment (max 4 MB, the same file types as before). Larger files: customers are told to call.
+- **Forms need an email provider** (`RESEND_API_KEY`, `INQUIRY_TO_EMAIL`, `INQUIRY_FROM_EMAIL`) to deliver anything; without them they show a "please call us" message.
+- **Age gate has no close (X) button**, by design (merchant-bank requirement). It is shown as a popup over the dimmed home page.
 - GoDaddy chat widget, reCAPTCHA and the "Desenvolvido por GoDaddy" credit are not carried over.

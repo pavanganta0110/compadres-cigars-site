@@ -28,7 +28,9 @@ export function parseInquiry(kind: InquiryKind, body: unknown): { ok: true; data
   return { ok: true, data };
 }
 
-export async function deliverInquiry(kind: InquiryKind, data: Record<string, string>): Promise<boolean> {
+export type Attachment = { filename: string; content: string }; // content is base64
+
+export async function deliverInquiry(kind: InquiryKind, data: Record<string, string>, attachment?: Attachment): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   const to = process.env.INQUIRY_TO_EMAIL;
   const from = process.env.INQUIRY_FROM_EMAIL;
@@ -44,7 +46,19 @@ export async function deliverInquiry(kind: InquiryKind, data: Record<string, str
       reply_to: data.email,
       subject: kind === "customer" ? "New customer application — Compadres Cigars" : "New website inquiry — Compadres Cigars",
       text: lines,
+      ...(attachment ? { attachments: [attachment] } : {}),
     }),
   });
   return res.ok;
+}
+
+// Tobacco-license upload. Kept small: Vercel functions accept ~4.5 MB request bodies.
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const ALLOWED_EXT = ["jpg", "jpeg", "png", "gif", "pdf", "doc", "docx", "xls", "xlsx", "odt", "ppt", "pptx", "pps", "ppsx", "html"];
+
+export function checkUpload(file: File): string | null {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_EXT.includes(ext)) return "That file type isn't allowed. Please use a photo, PDF or Office document.";
+  if (file.size > MAX_UPLOAD_BYTES) return "That file is over 4 MB. Please send a smaller copy, or call us at (816) 878-3545.";
+  return null;
 }

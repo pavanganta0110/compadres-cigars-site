@@ -26,7 +26,7 @@ export default function Page() {
       <section className="bg-ink-deep px-6 pb-14 pt-14 lg:px-[84px] lg:pb-[140px]">
         <div className="mx-auto max-w-[725px]">
           <h2 className="mb-10 text-center font-display lg:mb-[63px] text-[28px] leading-[1.4] text-gold lg:text-[39px]">Contact Us</h2>
-          <InquiryForm kind="contact" />
+          <InquiryForm />
           <p className="mt-12 text-center uppercase leading-6 text-[#919191] lg:mt-[106px]">
             Compadres Cigars is a licensed tobacco importer for the United State&rsquo;s market. We sell to wholesalers, distributors, and retailers nation wide.
           </p>

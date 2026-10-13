@@ -1,9 +1,19 @@
-import { deliverInquiry, parseInquiry, type InquiryKind } from "@/lib/inquiry";
+import { checkUpload, deliverInquiry, parseInquiry, type Attachment, type InquiryKind } from "@/lib/inquiry";
 
 export async function POST(request: Request) {
-  let body: Record<string, unknown>;
+  let body: Record<string, unknown> = {};
+  let file: File | null = null;
+
   try {
-    body = await request.json();
+    if ((request.headers.get("content-type") ?? "").includes("multipart/form-data")) {
+      const form = await request.formData();
+      for (const [k, v] of form.entries()) {
+        if (typeof v === "string") body[k] = typeof body[k] === "string" ? `${body[k]}, ${v}` : v;
+        else if (k === "license" && v.size > 0) file = v;
+      }
+    } else {
+      body = await request.json();
+    }
   } catch {
     return Response.json({ error: "Invalid request." }, { status: 400 });
   }
@@ -15,7 +25,14 @@ export async function POST(request: Request) {
   const parsed = parseInquiry(kind, body);
   if (!parsed.ok) return Response.json({ error: parsed.error }, { status: 400 });
 
-  const sent = await deliverInquiry(kind, parsed.data).catch(() => false);
+  let attachment: Attachment | undefined;
+  if (file) {
+    const problem = checkUpload(file);
+    if (problem) return Response.json({ error: problem }, { status: 400 });
+    attachment = { filename: file.name, content: Buffer.from(await file.arrayBuffer()).toString("base64") };
+  }
+
+  const sent = await deliverInquiry(kind, parsed.data, attachment).catch(() => false);
   if (!sent) {
     return Response.json(
       { error: "We couldn't send your message right now. Please call us at (816) 878-3545." },

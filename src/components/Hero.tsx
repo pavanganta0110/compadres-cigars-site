@@ -30,7 +30,7 @@ export default function Hero({ slides }: { slides: Slide[] }) {
       ))}
       {/* Flat 25% black overlay, as on the original */}
       <div className="absolute inset-0 bg-black/25" aria-hidden />
-      <div className="absolute inset-x-0 bottom-5 flex justify-center gap-3">
+      <div className={`absolute inset-x-0 bottom-5 justify-center gap-3 ${slides.length > 1 ? "flex" : "hidden"}`}>
         {slides.map((s, n) => (
           <button
             key={s.src}

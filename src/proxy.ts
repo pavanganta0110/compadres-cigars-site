@@ -14,6 +14,10 @@ const CRAWLER_BLOCKED = ["/files/", "/api/"];
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  // The optimizer route is open only for the public /images/* files (the gate page shows them behind the popup).
+  if (pathname === "/_next/image" && (request.nextUrl.searchParams.get("url") ?? "").startsWith("/images/")) {
+    return NextResponse.next();
+  }
   if (OPEN.has(pathname) || OPEN_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
   if (await verifyAgeToken(request.cookies.get(AGE_COOKIE)?.value)) return NextResponse.next();
