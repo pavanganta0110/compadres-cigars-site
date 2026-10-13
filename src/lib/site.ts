@@ -54,7 +54,7 @@ export const CATALOG = "/files/compadres-digital-catalog.pdf";
 
 export const MAIN_LINE = [
   {
-    name: "Robusto", size: "50 X 5", image: "/images/robusto-box.png", w: 1381, h: 1600,
+    name: "Robusto", size: "50 X 5", image: "/images/robusto-box.png", w: 1600, h: 1854,
     filler: "Cuban Seed", binder: "Dominican", wrap: "Connecticut",
     first: ["First Third: Light, airy start with a solid pull. Developing a", "sweet nutty flavor."],
     second: ["Second Third: Light to medium body flavor; maintaining", "a smooth mellow taste."],
@@ -68,7 +68,7 @@ export const MAIN_LINE = [
     final: ["Final Third: Hint of deep, smooth leather taste; retains its", "smoothness throughout the smoke; burns evenly and", "retains a smooth pull throughout."],
   },
   {
-    name: "Maduro Torpedo", size: "52 X 6", image: "/images/torpedo-box.png", w: 1171, h: 1600,
+    name: "Maduro Torpedo", size: "52 X 6", image: "/images/torpedo-box.png", w: 1600, h: 2186,
     filler: "Cuban Seed", binder: "Cuban Seed", wrap: "Habana",
     first: ["First Third: Dry, earthy flavor, a hint of expresso; light to", "medium pull."],
     second: ["Second Third: Medium full body flavor; produces a medium", "pull; develops a sharpness and a little bit of fire."],

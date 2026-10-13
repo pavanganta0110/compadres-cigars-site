@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  images: { qualities: [75, 90] },
+  images: { qualities: [75, 85, 90] },
   partialPrefetching: true,
   turbopack: {
     rules: {

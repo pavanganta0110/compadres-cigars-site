@@ -21,7 +21,7 @@ export default function Page() {
                   width={img.w}
                   height={img.h}
                   sizes="(min-width: 1280px) 365px, (min-width: 640px) 33vw, 100vw"
-                  className="h-auto w-full"
+                  quality={85} className="h-auto w-full"
                 />
               ))}
             </div>

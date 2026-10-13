@@ -13,7 +13,7 @@ export default function Page() {
           <PageHeading>Humidor Program</PageHeading>
           <div className="grid items-center gap-x-12 gap-y-8 md:grid-cols-3">
             <div className="relative aspect-[339/465] w-full overflow-hidden">
-              <Image src="/images/blob-88db595.png" alt="Display humidor" fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" className="object-cover" />
+              <Image src="/images/blob-88db595.png" alt="Display humidor" fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" quality={85} className="object-cover" />
             </div>
             <div className="md:col-span-2">
               <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">Display Humidors</h2>

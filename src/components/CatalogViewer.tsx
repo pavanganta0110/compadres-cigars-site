@@ -19,6 +19,7 @@ export default function CatalogViewer({ pages, pdf }: { pages: number; pdf: stri
             alt={`Compadres catalog, page ${page} of ${pages}`}
             fill
             priority={page === 1}
+            quality={90}
             sizes="(min-width: 768px) 733px, 100vw"
             className="object-contain"
           />

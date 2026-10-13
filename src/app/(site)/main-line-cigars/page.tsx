@@ -17,7 +17,7 @@ export default function Page() {
           <div className="mx-auto max-w-[725px] text-center leading-6 text-muted">
             {MAIN_LINE.map((c, n) => (
               <article key={c.name} className={n === 0 ? "" : n === 1 ? "mt-10" : "mt-4"}>
-                <Image src={c.image} alt={`${c.name} box`} width={c.w} height={c.h} sizes="(min-width: 768px) 725px, 100vw" className="mx-auto h-auto w-full" />
+                <Image src={c.image} alt={`${c.name} box`} width={c.w} height={c.h} sizes="(min-width: 768px) 725px, 100vw" quality={90} className="mx-auto h-auto w-full" />
                 <p className="mt-[3px] uppercase">{c.name}</p>
                 <p>{c.size}</p>
                 {gap}

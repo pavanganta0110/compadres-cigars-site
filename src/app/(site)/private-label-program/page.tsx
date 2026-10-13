@@ -23,7 +23,7 @@ export default function Page() {
               <div key={s.title}>
                 <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">{s.title}</h2>
                 <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden">
-                  <Image src={s.src} alt={s.alt} fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" className="object-cover" />
+                  <Image src={s.src} alt={s.alt} fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" quality={85} className="object-cover" />
                 </div>
                 {n === 1 && (
                   <div className="mt-6 uppercase leading-6 text-muted">

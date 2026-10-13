@@ -27,7 +27,7 @@ export default function Page() {
               <article key={i.name}>
                 <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">{i.name}</h2>
                 <div className="relative mt-[23px] aspect-[2/1] w-full overflow-hidden">
-                  <Image src={i.src} alt={i.alt} fill sizes="(min-width: 1280px) 532px, (min-width: 768px) 50vw, 100vw" className="object-cover" />
+                  <Image src={i.src} alt={i.alt} fill sizes="(min-width: 1280px) 532px, (min-width: 768px) 50vw, 100vw" quality={85} className="object-cover" />
                 </div>
                 <div className="mt-6 leading-6 text-muted">
                   {i.lines.map((l) => <p key={l} className="uppercase">{l}</p>)}

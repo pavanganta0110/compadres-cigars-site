@@ -14,7 +14,7 @@ export default function Page() {
           <div className="mx-auto max-w-[725px] text-center">
             <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">Compadres Dominican Blanks</h2>
             <div className="relative mt-[23px] aspect-[2/1] w-full overflow-hidden">
-              <Image src="/images/img_20220407_121811.jpg" alt="Compadres Dominican Blanks" fill sizes="(min-width: 768px) 725px, 100vw" className="object-cover" />
+              <Image src="/images/img_20220407_121811.jpg" alt="Compadres Dominican Blanks" fill sizes="(min-width: 768px) 725px, 100vw" quality={90} className="object-cover" />
             </div>
             <div className="mt-6 leading-6 text-muted">
               <p>HAND ROLLED SHORT FILL CIGARS</p>
