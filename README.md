@@ -20,7 +20,7 @@ npm run lint && npx tsc --noEmit && npm run build
 
 ## 21+ age gate
 
-- `src/proxy.ts` runs on every request. Without a valid signed cookie (`cc_age_ok`) it redirects to `/age-gate`, including direct hits on internal pages, PDFs, images, `/_next/image`, the API and the sitemap. Only `/age-gate`, `/api/age-verify`, `/robots.txt` and the gate logo are open.
+- `src/proxy.ts` runs on every request. Without a valid signed cookie (`cc_age_ok`) it redirects to `/age-gate`, including direct hits on pages, PDFs, `/_next/image`, the API and the sitemap. Open: `/age-gate`, `/api/age-verify`, `/robots.txt` and `/images/*` (Next's image optimizer fetches those internally without the cookie, so gating them breaks every image; they are product photos only).
 - The "I AM 21 OR OLDER" button POSTs to `/api/age-verify`, which sets an HMAC-signed, HttpOnly, Secure, SameSite=Lax cookie (`<expiry>.<signature>`). Forged, tampered, malformed and expired cookies are rejected. The post-confirmation redirect only accepts same-site relative paths.
 - There is no close button; "I am under 21 — exit" leaves to `AGE_GATE_EXIT_URL`.
 - Env: `AGE_GATE_SECRET` (**required in production**; without it the site stays gated and confirming returns 500, by design), `AGE_GATE_TTL_DAYS` (default 30), `AGE_GATE_EXIT_URL`.
