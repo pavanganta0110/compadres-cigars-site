@@ -53,7 +53,7 @@ export const HERO_SLIDES = [
   { src: "/images/hero/slide-1.jpg", alt: "Smoking a Compadres cigar", position: "50.26% 25.65%" },
   { src: "/images/hero/slide-2.jpg", alt: "Compadres cigar beside a glass and cigar ashtray", position: "50.7% 68.26%" },
   { src: "/images/hero/slide-3.jpg", alt: "Compadres Cardinal box press cigars", position: "11.55% 70%" },
-  { src: "/images/hero/slide-4.png", alt: "Compadres Robusto box", position: "47.18% 78.7%" },
+  { src: "/images/hero/slide-4.jpg", alt: "Compadres Robusto box", position: "47.18% 78.7%" },
 ];
 
 export const BROCHURE = "/files/compadres-cigars.pdf";
