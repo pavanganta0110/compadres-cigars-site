@@ -40,7 +40,7 @@ export default function Header() {
             </svg>
           </button>
 
-          <ul className="hidden items-center gap-[27px] lg:flex xl:hidden">
+          <ul className="hidden items-center gap-[22px] lg:flex xl:hidden">
             {NAV.map((item) => (
               <li key={item.label} className="group relative">
                 <Link
@@ -66,7 +66,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <ul className="hidden items-center gap-[27px] xl:flex">
+          <ul className="hidden items-center gap-[22px] xl:flex">
             {NAV_WIDE.map((item) => (
               <li key={item.label} className="group relative">
                 <Link

@@ -6,12 +6,12 @@ import ProductTile from "@/components/ProductTile";
 export const metadata: Metadata = { title: { absolute: "Compadres Cigars - online" }, alternates: { canonical: "/all-products" } };
 
 const TILES = [
-  { title: "Compadres Main Line", href: "/main-line-cigars", image: "/images/blob-2c0c5f8.png", lines: ["Our main line of premium cigars", "Hand rolled"] },
-  { title: "Compadres Cardinal Line", href: "/cardinal-line", image: "/images/blob-09adc1b.png", lines: ["Compadres Cardinal Line", "The finest tobacco aged to perfection"] },
-  { title: "Compadres Cigarillos & Flavored Cigars", href: "/cigarillos", image: "/images/blob-3c1a27b.png", lines: ["Cigarillos & flavored cigars", "Hand rolled"] },
-  { title: "Compadres Dominican Blanks", href: "/dominican-blanks", image: "/images/compadres-cigars-60-x-6-crop.jpg", lines: ["Dominican Blanks", "Hand rolled short fill"] },
-  { title: "Compadres Private Label", href: "/private-label-program", image: "/images/whatsapp-image-2023-11-06-at-13.38.05_9b6786cc.jpg", lines: ["Private label program", "Custom rings, boxes, and cigars"] },
-  { title: "Compadres Humidor Program", href: "/humidor-program", image: "/images/blob-4684b34.png", lines: ["Humidor program"] },
+  { title: "Compadres Main Line", href: "/main-line-cigars", image: "/images/blob-2c0c5f8.png", position: "50% 88%", lines: ["Our main line of premium cigars", "Hand rolled"] },
+  { title: "Compadres Cardinal Line", href: "/cardinal-line", image: "/images/blob-09adc1b.png", position: "50% 80%", lines: ["Compadres Cardinal Line", "The finest tobacco aged", "to perfection"] },
+  { title: "Compadres Cigarillos & Flavored Cigars", href: "/cigarillos", image: "/images/blob-3c1a27b.png", position: "50% 50%", lines: ["Cigarillos & flavored cigars", "Hand rolled"] },
+  { title: "Compadres Dominican Blanks", href: "/dominican-blanks", image: "/images/compadres-cigars-60-x-6-crop.jpg", position: "50% 50%", lines: ["Compadres Cigars", "Dominican Blanks", "Hand rolled short fill"] },
+  { title: "Compadres Private Label", href: "/private-label-program", image: "/images/whatsapp-image-2023-11-06-at-13.38.05_9b6786cc.jpg", position: "50% 50%", lines: ["Compadres Cigars", "Private label program", "Custom rings, boxes, and cigars"] },
+  { title: "Compadres Humidor Program", href: "/humidor-program", image: "/images/blob-4684b34.png", position: "50% 50%", lines: ["Compadres Cigars", "Humidor program"] },
 ];
 
 export default function Page() {
@@ -20,7 +20,7 @@ export default function Page() {
       <section className="px-6 pb-14 pt-14 lg:px-[84px]">
         <div className="mx-auto max-w-[1112px]">
           <PageHeading>Compadres Cigars</PageHeading>
-          <div className="grid gap-x-12 gap-y-[75px] md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-12 gap-y-[51px] md:grid-cols-2 lg:grid-cols-3">
             {TILES.map((t) => <ProductTile key={t.href} {...t} />)}
           </div>
         </div>
