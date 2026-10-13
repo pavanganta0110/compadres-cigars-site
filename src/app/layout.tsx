@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo_Black, Montserrat } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { SITE } from "@/lib/site";
 
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] });
@@ -28,9 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${montserrat.variable} ${archivo.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
