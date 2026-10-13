@@ -5,6 +5,17 @@ import { GALLERY_ROWS, type GalleryImage } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Gallery", alternates: { canonical: "/gallery" } };
 
+// Masonry like the original: N columns, tops aligned, each photo goes into the currently shortest column.
+function masonry(images: GalleryImage[], cols: number) {
+  const out: { items: GalleryImage[]; h: number }[] = Array.from({ length: cols }, () => ({ items: [], h: 0 }));
+  for (const img of images) {
+    const c = out.reduce((a, b) => (b.h < a.h ? b : a));
+    c.items.push(img);
+    c.h += img.h / img.w;
+  }
+  return out.map((c) => c.items);
+}
+
 function Photo({ img, sizes }: { img: GalleryImage; sizes: string }) {
   return (
     <Image
@@ -19,36 +30,27 @@ function Photo({ img, sizes }: { img: GalleryImage; sizes: string }) {
   );
 }
 
-// Rows of three, bottom-aligned, on tablets/desktops; rows of two on phones (as on the original).
-const phoneRows = (() => {
-  const flat = GALLERY_ROWS.flat();
-  const out: GalleryImage[][] = [];
-  for (let i = 0; i < flat.length; i += 2) out.push(flat.slice(i, i + 2));
-  return out;
-})();
-
 export default function Page() {
+  const all = GALLERY_ROWS.flat();
+  const desktop = masonry(all, 3);
+  const phone = masonry(all, 2);
   return (
     <section className="px-6 pb-14 pt-14 lg:px-[84px] lg:pb-[125px]">
       <div className="mx-auto max-w-[1112px]">
         <PageHeading>Photo Gallery</PageHeading>
 
-        <div className="hidden flex-col gap-3 sm:flex">
-          {GALLERY_ROWS.map((row, r) => (
-            <div key={r} className="grid grid-cols-3 items-end gap-2">
-              {row.map((img) => (
-                <Photo key={img.file} img={img} sizes="(min-width: 1280px) 365px, 33vw" />
-              ))}
+        <div className="hidden gap-2 sm:grid sm:grid-cols-3">
+          {desktop.map((col, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              {col.map((img) => <Photo key={img.file} img={img} sizes="(min-width: 1280px) 365px, 33vw" />)}
             </div>
           ))}
         </div>
 
-        <div className="flex flex-col gap-2 sm:hidden">
-          {phoneRows.map((row, r) => (
-            <div key={r} className="grid grid-cols-2 items-end gap-2">
-              {row.map((img) => (
-                <Photo key={img.file} img={img} sizes="50vw" />
-              ))}
+        <div className="grid grid-cols-2 gap-2 sm:hidden">
+          {phone.map((col, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              {col.map((img) => <Photo key={img.file} img={img} sizes="50vw" />)}
             </div>
           ))}
         </div>
