@@ -17,10 +17,10 @@ const TILES = [
 export default function Page() {
   return (
     <>
-      <section className="px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="px-6 pb-14 pt-14 lg:px-[84px]">
+        <div className="mx-auto max-w-[1112px]">
           <PageHeading>Compadres Cigars</PageHeading>
-          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-12 gap-y-[75px] md:grid-cols-2 lg:grid-cols-3">
             {TILES.map((t) => <ProductTile key={t.href} {...t} />)}
           </div>
         </div>

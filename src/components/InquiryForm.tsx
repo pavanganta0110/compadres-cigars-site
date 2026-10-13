@@ -24,7 +24,7 @@ const CUSTOMER: Field[] = [
   { name: "message", label: "Message", textarea: true },
 ];
 
-const input = "w-full rounded-sm bg-panel px-4 py-3 text-sm text-bone placeholder:text-muted focus:outline focus:outline-gold";
+const input = "w-full bg-ink px-4 py-3 text-sm text-[#bfbfbf] placeholder:text-muted focus:outline focus:outline-gold";
 
 export default function InquiryForm({ kind }: { kind: InquiryKind }) {
   const fields = kind === "customer" ? CUSTOMER : CONTACT;
@@ -61,16 +61,16 @@ export default function InquiryForm({ kind }: { kind: InquiryKind }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className={`grid grid-cols-1 sm:grid-cols-2 ${kind === "contact" ? "gap-[27px]" : "gap-4"}`}>
       {fields.map((f) => (
         <div key={f.name} className={f.half ? "" : "sm:col-span-2"}>
-          <label htmlFor={f.name} className="mb-1 block text-xs uppercase tracking-wide text-muted">
+          <label htmlFor={f.name} className={kind === "contact" ? "sr-only" : "mb-1 block text-sm text-[#ababab]"}>
             {f.label}{f.required && " *"}
           </label>
           {f.textarea ? (
-            <textarea id={f.name} name={f.name} required={f.required} rows={5} maxLength={4000} className={input} />
+            <textarea id={f.name} name={f.name} required={f.required} maxLength={4000} placeholder={kind === "contact" ? `${f.label}${f.required ? "*" : ""}` : undefined} className={`${input} ${kind === "contact" ? "h-[155px]" : "h-32"}`} />
           ) : (
-            <input id={f.name} name={f.name} type={f.type ?? "text"} required={f.required} maxLength={500} className={input} />
+            <input id={f.name} name={f.name} type={f.type ?? "text"} required={f.required} maxLength={500} placeholder={kind === "contact" ? `${f.label}${f.required ? "*" : ""}` : undefined} className={`${input} h-11`} />
           )}
         </div>
       ))}
@@ -93,11 +93,11 @@ export default function InquiryForm({ kind }: { kind: InquiryKind }) {
       {/* Honeypot — hidden from people, filled by bots. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
 
-      <div className="text-center sm:col-span-2">
+      <div className={`text-center sm:col-span-2 ${kind === "contact" ? "-mt-[5px]" : ""}`}>
         <button
           type="submit"
           disabled={state === "sending"}
-          className="bg-gold px-10 py-3 text-xs font-bold uppercase tracking-widest text-white transition hover:brightness-110 disabled:opacity-60"
+          className="h-14 rounded bg-gold px-9 text-sm font-bold uppercase text-white transition hover:brightness-110 disabled:opacity-60"
         >
           {state === "sending" ? "Sending…" : kind === "customer" ? "Submit" : "Send"}
         </button>

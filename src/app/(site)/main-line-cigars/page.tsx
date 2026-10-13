@@ -6,34 +6,36 @@ import { MAIN_LINE } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Main Line Cigars", alternates: { canonical: "/main-line-cigars" } };
 
+const gap = <div className="h-6" aria-hidden />;
+
 export default function Page() {
   return (
     <>
-      <section className="px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl">
+      <section className="px-6 pb-14 pt-14 lg:px-[84px] lg:pb-[81px]">
+        <div className="mx-auto max-w-[1112px]">
           <PageHeading>Main Line Cigars</PageHeading>
-          <div className="space-y-20">
-            {MAIN_LINE.map((c) => (
-              <article key={c.name} className="text-center">
-                <Image src={c.image} alt={`${c.name} box`} width={900} height={800} sizes="(min-width: 768px) 700px, 100vw" className="mx-auto h-auto w-full max-w-xl" />
-                <h2 className="mt-6 text-lg font-semibold uppercase">{c.name}</h2>
-                <p className="uppercase text-muted">{c.size}</p>
-                <dl className="my-6 space-y-1 text-sm">
-                  <div><dt className="inline">Filler: </dt><dd className="inline">{c.filler}</dd></div>
-                  <div><dt className="inline">Binder: </dt><dd className="inline">{c.binder}</dd></div>
-                  <div><dt className="inline">Wrap: </dt><dd className="inline">{c.wrap}</dd></div>
-                </dl>
-                <div className="mx-auto max-w-lg space-y-3 text-sm leading-relaxed text-bone/90">
-                  <p><strong>First Third:</strong> {c.first}</p>
-                  <p><strong>Second Third:</strong> {c.second}</p>
-                  <p><strong>Final Third:</strong> {c.final}</p>
-                </div>
+          <div className="mx-auto max-w-[725px] text-center leading-6 text-muted">
+            {MAIN_LINE.map((c, n) => (
+              <article key={c.name} className={n === 0 ? "" : n === 1 ? "mt-10" : "mt-4"}>
+                <Image src={c.image} alt={`${c.name} box`} width={c.w} height={c.h} sizes="(min-width: 768px) 725px, 100vw" className="mx-auto h-auto w-full" />
+                <p className="mt-[3px] uppercase">{c.name}</p>
+                <p>{c.size}</p>
+                {gap}
+                <p>Filler: {c.filler}</p>
+                <p>Binder: {c.binder}</p>
+                <p>Wrap: {c.wrap}</p>
+                {gap}
+                {c.first.map((l) => <p key={l}>{l}</p>)}
+                {gap}
+                {c.second.map((l) => <p key={l}>{l}</p>)}
+                {gap}
+                {c.final.map((l) => <p key={l}>{l}</p>)}
               </article>
             ))}
           </div>
         </div>
       </section>
-      <DownloadCard heading="Download Our Full Product List" />
+      <DownloadCard heading="Download OUR FULL PRODUCT LIST" title="Compadres Cigars (pdf)" />
     </>
   );
 }

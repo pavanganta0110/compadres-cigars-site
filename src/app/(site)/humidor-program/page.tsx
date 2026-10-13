@@ -8,17 +8,21 @@ export const metadata: Metadata = { title: "Humidor Program", alternates: { cano
 export default function Page() {
   return (
     <>
-      <section className="px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl text-center">
+      <section className="px-6 pb-14 pt-14 lg:px-[84px]">
+        <div className="mx-auto max-w-[1112px]">
           <PageHeading>Humidor Program</PageHeading>
-          <Image src="/images/blob-88db595.png" alt="Display humidor" width={1200} height={900} sizes="(min-width: 768px) 700px, 100vw" className="mx-auto h-auto w-full" />
-          <h2 className="mt-8 text-lg uppercase">Display humidors</h2>
-          <p className="mt-2 text-sm uppercase leading-loose text-muted">
-            We offer humidors for customers at no charge. Call us for more information.
-          </p>
+          <div className="grid items-center gap-x-12 gap-y-8 md:grid-cols-3">
+            <div className="relative aspect-[339/465] w-full overflow-hidden">
+              <Image src="/images/blob-88db595.png" alt="Display humidor" fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" className="object-cover" />
+            </div>
+            <div className="md:col-span-2">
+              <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">Display Humidors</h2>
+              <p className="mt-6 leading-6 text-muted">WE OFFER HUMIDORS FOR CUSTOMERS AT NO CHARGE. CALL US FOR MORE INFORMATION.</p>
+            </div>
+          </div>
         </div>
       </section>
-      <DownloadCard heading="Download Our Full Product List" title="Compadres Cigars (pdf)" />
+      <DownloadCard heading="Download OUR FULL PRODUCT LIST" title="Compadres Cigars (pdf)" />
     </>
   );
 }

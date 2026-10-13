@@ -7,7 +7,8 @@
   --color-gold: #a78a36;
   --color-gold-bar: #b09a54;
   --color-bone: #f7f7f7;
-  --color-muted: #a9a9a9;
+  --color-muted: #a4a4a4;
+  --color-footer: #a9a9a9;
   --font-sans: var(--font-montserrat), Arial, sans-serif;
   --font-display: var(--font-archivo), "Archivo Black", Arial, sans-serif;
 }

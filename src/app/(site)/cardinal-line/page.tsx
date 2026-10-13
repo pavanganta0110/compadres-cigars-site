@@ -13,23 +13,25 @@ const ITEMS = [
 export default function Page() {
   return (
     <>
-      <section className="px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
+      <section className="px-6 pb-14 pt-14 lg:px-[84px]">
+        <div className="mx-auto max-w-[1112px]">
           <PageHeading>Compadres Cardinal Line</PageHeading>
-          <div className="grid gap-12 md:grid-cols-2">
+          <div className="grid gap-x-12 gap-y-16 text-center md:grid-cols-2">
             {ITEMS.map((i) => (
-              <article key={i.name} className="text-center">
-                <Image src={i.src} alt={i.name} width={900} height={900} sizes="(min-width: 768px) 450px, 100vw" className="mx-auto h-auto w-full" />
-                <h2 className="mt-6 text-lg uppercase">{i.name}</h2>
-                <p className="mt-2 text-sm uppercase leading-loose text-muted">
-                  {i.specs.map((s) => <span key={s} className="block">{s}</span>)}
-                </p>
+              <article key={i.name}>
+                <h2 className="text-[22px] uppercase leading-[27.5px] text-bone">{i.name}</h2>
+                <div className="relative mt-[23px] aspect-[4/3] w-full overflow-hidden">
+                  <Image src={i.src} alt={i.name} fill sizes="(min-width: 1280px) 532px, (min-width: 768px) 50vw, 100vw" className="object-cover" />
+                </div>
+                <div className="mt-6 leading-6 text-muted">
+                  {i.specs.map((s) => <p key={s} className="uppercase">{s}</p>)}
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
-      <DownloadCard heading="Download Our Full Product List" title="Compadres Cigars (pdf)" />
+      <DownloadCard heading="Download OUR FULL PRODUCT LIST" title="Compadres Cigars (pdf)" />
     </>
   );
 }

@@ -31,17 +31,17 @@ async function Form({ searchParams }: { searchParams: Promise<{ next?: string }>
 
 export default function AgeGate({ searchParams }: PageProps<"/age-gate">) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-ink-deep px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-ink px-4 py-10">
       <div role="dialog" aria-modal="true" aria-labelledby="age-title" className="w-full max-w-md bg-white px-6 py-10 text-center text-ink sm:px-10">
-        <div className="-mx-6 -mt-10 mb-8 bg-black sm:-mx-10">
+        <div className="relative -mx-6 -mt-10 mb-8 aspect-[3/2] bg-black sm:-mx-10">
           <Image
             src="/images/age-gate-logo.jpg"
             alt="Compadres Cigars"
-            width={480}
-            height={480}
+            fill
             unoptimized
             priority
-            className="mx-auto h-auto w-full max-w-60"
+            className="object-cover"
+            style={{ objectPosition: "50% 43%" }}
           />
         </div>
         <h1 id="age-title" className="text-sm font-semibold uppercase leading-relaxed tracking-wide">

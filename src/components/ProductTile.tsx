@@ -4,15 +4,15 @@ import Link from "next/link";
 export default function ProductTile({ title, href, image, lines }: { title: string; href: string; image: string; lines: string[] }) {
   return (
     <Link href={href} className="group block text-center">
-      <h2 className="mb-4 min-h-14 text-lg uppercase tracking-wide">{title}</h2>
-      <div className="relative mx-auto aspect-[4/3] w-full overflow-hidden bg-ink-deep">
-        <Image src={image} alt={title} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-contain transition group-hover:scale-105" />
+      <h2 className="flex min-h-[55px] items-start justify-center text-[22px] leading-[27.5px] uppercase text-bone">{title}</h2>
+      <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden">
+        <Image src={image} alt={title} fill sizes="(min-width: 1280px) 339px, (min-width: 768px) 33vw, 100vw" className="object-cover" />
       </div>
-      <p className="mt-4 text-xs uppercase leading-relaxed tracking-wide text-muted">
+      <div className="mt-6 leading-6 text-muted">
         {lines.map((l) => (
-          <span key={l} className="block">{l}</span>
+          <p key={l} className="uppercase">{l}</p>
         ))}
-      </p>
+      </div>
     </Link>
   );
 }

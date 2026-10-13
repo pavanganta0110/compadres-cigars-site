@@ -11,7 +11,7 @@ export default function Hero({ slides }: { slides: { src: string; alt: string }[
   }, [slides.length]);
 
   return (
-    <div className="relative h-[60vh] min-h-80 w-full overflow-hidden bg-ink-deep sm:h-[75vh]">
+    <div className="relative h-[420px] w-full overflow-hidden bg-ink-deep sm:h-[600px]">
       {slides.map((s, n) => (
         <Image
           key={s.src}
