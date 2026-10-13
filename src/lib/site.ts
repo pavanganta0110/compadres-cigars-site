@@ -118,6 +118,7 @@ export const GALLERY_COLUMNS: GalleryImage[][] = [
     { file: "suzannefryerphotography_compadres-5007.jpg", w: 1800, h: 1200 },
     { file: "gallery-open-box-cutter.jpg", w: 2000, h: 1333 },
     { file: "gallery-cardinal-cigars-hand.jpg", w: 1298, h: 1649 },
+    { file: "gallery-gran-corona-box.jpg", w: 799, h: 708 },
   ],
   [
     { file: "suzannefryerphotography_compadres--2.jpg", w: 1199, h: 1800 },
