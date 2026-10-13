@@ -43,3 +43,6 @@ next-env.d.ts
 
 # raw photo drop-box; processed images go in public/images
 /incoming/
+
+# dev-only local data store for the admin dashboard
+/.dev-data/
