@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { Archivo_Black, Montserrat } from "next/font/google";
 import "./globals.css";
 import { getSettings } from "@/lib/settings";
@@ -9,9 +8,6 @@ const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"
 const archivo = Archivo_Black({ variable: "--font-archivo", subsets: ["latin"], weight: "400" });
 
 export async function generateMetadata(): Promise<Metadata> {
-  "use cache";
-  cacheTag("settings");
-  cacheLife("hours");
   const s = await getSettings();
   const title = s.seo.defaultTitle || SITE.name;
   const description = s.seo.defaultDescription || SITE.description;

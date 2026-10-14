@@ -2,6 +2,7 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { nowMs } from "@/lib/clock";
 import type { HistoryRow, Inquiry, InquiryFilter, NewInquiry, PageView, Stats, Store } from "./types";
 
 // DEVELOPMENT-ONLY stand-in for Supabase so the dashboard can be built and tested locally.
@@ -27,8 +28,8 @@ function save(d: DB) {
   fs.writeFileSync(FILE, JSON.stringify(d, null, 1));
 }
 const safeName = (n: string) => n.replace(/[^\w.\- ]+/g, "_").slice(0, 120) || "file";
-const today = () => new Date().toISOString().slice(0, 10);
-const daysAgo = (n: number) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
+const today = () => new Date(nowMs()).toISOString().slice(0, 10);
+const daysAgo = (n: number) => new Date(nowMs() - n * 86400000).toISOString().slice(0, 10);
 
 function filtered(d: DB, f: InquiryFilter) {
   const q = (f.q ?? "").toLowerCase().trim();
@@ -91,7 +92,7 @@ export const fileStore: Store = {
     v30.forEach((v) => { if (!byDay.has(v.day)) byDay.set(v.day, new Set()); byDay.get(v.day)!.add(v.visitor); });
     const pages = new Map<string, number>();
     v30.forEach((v) => pages.set(v.path, (pages.get(v.path) ?? 0) + 1));
-    const since = Date.now() - 30 * 86400000;
+    const since = nowMs() - 30 * 86400000;
     const inq = (kind: string, recent?: boolean) => d.inquiries.filter((i) => i.kind === kind && (!recent || Date.parse(i.created_at) >= since)).length;
     return {
       visitors_30: uniq(v30), visitors_365: uniq(within(365)), views_30: v30.length,
