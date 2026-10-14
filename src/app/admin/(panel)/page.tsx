@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { getStore } from "@/lib/store";
 import { Card, Notice, PageTitle, StatusBadge, fmtDate } from "../ui";
 import type { Stats } from "@/lib/store/types";
@@ -15,10 +16,12 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
   );
 }
 
+const last30Days = () => Array.from({ length: 30 }, (_, i) => new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10));
+
 function Chart({ data }: { data: Stats["by_day"] }) {
   // Last 30 days, zero-filled.
   const map = new Map(data.map((d) => [d.day, d.visitors]));
-  const days = Array.from({ length: 30 }, (_, i) => new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10));
+  const days = last30Days();
   const vals = days.map((d) => map.get(d) ?? 0);
   const max = Math.max(1, ...vals);
   return (
@@ -36,6 +39,7 @@ function Chart({ data }: { data: Stats["by_day"] }) {
 }
 
 export default async function Dashboard() {
+  await connection();
   const store = getStore();
   if (!store) {
     return (

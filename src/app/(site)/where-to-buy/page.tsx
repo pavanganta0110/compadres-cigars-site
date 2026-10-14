@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Where to Buy", alternates: { canonical: "/where-to-buy" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/where-to-buy", { title: "Where to Buy" });
+}
 
 export default function Page() {
   return (

@@ -12,7 +12,7 @@ function isActive(pathname: string, item: NavItem) {
   return item.href === pathname;
 }
 
-export default function Header() {
+export default function Header({ phone = SITE.phone }: { phone?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [sub, setSub] = useState<string | null>(null);
@@ -21,7 +21,7 @@ export default function Header() {
     <header className="relative z-40">
       <div className="bg-gold-bar py-1 text-center text-base leading-6 text-white">
         <p>CALL US FOR MORE INFORMATION</p>
-        <a href={SITE.phoneHref}>{SITE.phone}</a>
+        <a href={`tel:${phone.replace(/[^\d+]/g, "")}`}>{phone}</a>
       </div>
       <div className="relative bg-ink">
         <nav aria-label="Main" className="mx-auto flex items-center justify-between px-4 py-4 lg:justify-center lg:py-[21px]">

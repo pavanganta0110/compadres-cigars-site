@@ -6,6 +6,8 @@ import { Card, Notice, PageTitle, StatusBadge, STATUS_LABEL, btnCls, btnGhost, f
 const STATUSES = Object.keys(STATUS_LABEL) as InquiryStatus[];
 const PAGE = 25;
 
+export const instant = false; // admin pages render per request; instant navigation isn't needed
+
 export default async function Inquiries({ searchParams }: PageProps<"/admin/inquiries">) {
   const sp = (await searchParams) as Record<string, string | undefined>;
   const status = STATUSES.includes(sp.status as InquiryStatus) ? (sp.status as InquiryStatus) : undefined;

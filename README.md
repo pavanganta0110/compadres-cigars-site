@@ -33,3 +33,20 @@ npm run lint && npx tsc --noEmit && npm run build
 - **Forms need an email provider** (`RESEND_API_KEY`, `INQUIRY_TO_EMAIL`, `INQUIRY_FROM_EMAIL`) to deliver anything; without them they show a "please call us" message.
 - **Age gate has no close (X) button**, by design (merchant-bank requirement). It is shown as a popup over the dimmed home page.
 - GoDaddy chat widget, reCAPTCHA and the "Desenvolvido por GoDaddy" credit are not carried over.
+
+## Admin dashboard (`/admin`)
+
+Inquiry inbox, site settings and tracking tags, modelled on GoDaddy's dashboard.
+
+- **Dashboard:** visitors (the site's own cookie-less counter, no IPs stored), inquiries, customer applications, top pages.
+- **Inquiries:** every Contact / Become-a-Customer submission is saved (with the license file in a private bucket), with status, notes, search and CSV export. Emails still go out too if Resend is configured.
+- **Site Profile:** basic info, social links, favicon upload, SEO titles/descriptions per page, `llms.txt` editor, change history.
+- **Analytics & Tracking:** cookie banner, Google Analytics, Meta Pixel, Facebook/Pinterest/Search Console verification tags, Google Tag, Tag Manager, AdSense. IDs are validated; when the cookie banner is on, tags load only after a visitor clicks Accept.
+
+### One-time setup
+1. Create a **new** Supabase project (not any other business's). In **SQL Editor**, run `supabase/migrations/0001_init.sql`. All tables have Row Level Security on with no policies, so browsers can read/write nothing; only the server (service-role key) can.
+2. In Supabase **Authentication -> URL Configuration**, set Site URL to your site and add `https://<your-domain>/auth/callback` (and the `*.vercel.app` preview URL if you use it) to **Redirect URLs**.
+3. In Vercel, add the variables from `.env.example` (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_EMAILS`) for Production and Preview, then redeploy.
+4. Visit `/admin`, enter an email from `ADMIN_EMAILS`, and click the emailed link.
+
+Without these variables the dashboard shows "database not connected" and nothing is stored (forms still email). The `.dev-data/` stand-in store only works with `npm run dev` and is refused in production.

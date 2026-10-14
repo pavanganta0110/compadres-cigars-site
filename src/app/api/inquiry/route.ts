@@ -1,4 +1,5 @@
 import { checkUpload, deliverInquiry, parseInquiry, type Attachment, type InquiryKind } from "@/lib/inquiry";
+import { getStore } from "@/lib/store";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown> = {};
@@ -32,8 +33,29 @@ export async function POST(request: Request) {
     attachment = { filename: file.name, content: Buffer.from(await file.arrayBuffer()).toString("base64") };
   }
 
-  const sent = await deliverInquiry(kind, parsed.data, attachment).catch(() => false);
-  if (!sent) {
+  // 1) Save to the dashboard database (if configured). 2) Email a copy (if configured).
+  const d = parsed.data;
+  let saved = false;
+  const store = getStore();
+  if (store) {
+    try {
+      const id = await store.insertInquiry({
+        kind,
+        name: d.name || [d.firstName, d.lastName].filter(Boolean).join(" ") || null,
+        email: d.email,
+        phone: d.phone || null,
+        company: d.company || null,
+        message: d.message || null,
+        data: d,
+      });
+      saved = true;
+      if (file) await store.attachLicense(id, file.name, Buffer.from(await file.arrayBuffer()), file.type || "application/octet-stream").catch((e) => console.error("inquiry: license upload failed", e));
+    } catch (e) {
+      console.error("inquiry: could not save", e);
+    }
+  }
+  const emailed = await deliverInquiry(kind, d, attachment).catch(() => false);
+  if (!saved && !emailed) {
     return Response.json(
       { error: "We couldn't send your message right now. Please call us at (816) 878-3545." },
       { status: 503 },

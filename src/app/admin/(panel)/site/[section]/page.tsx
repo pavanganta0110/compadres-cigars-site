@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { SEO_PAGES, SECTIONS, defaultLlms, loadSettings, sectionBySlug } from "@/lib/settings";
+import { SEO_PAGES, SECTIONS, clientFields, defaultLlms, loadSettings, sectionBySlug } from "@/lib/settings";
 import { getStore } from "@/lib/store";
 import FaviconForm from "../../../FaviconForm";
 import LlmsForm from "../../../LlmsForm";
@@ -13,6 +13,8 @@ const SPECIAL: Record<string, { title: string; blurb: string }> = {
   "ai-visibility": { title: "AI Visibility (LLMS.txt)", blurb: "A plain-text guide that helps AI assistants describe your business accurately." },
   history: { title: "Site History", blurb: "Every change made in this dashboard, newest first." },
 };
+
+export const instant = false; // admin pages render per request; instant navigation isn't needed
 
 export default async function SitePage({ params }: PageProps<"/admin/site/[section]">) {
   const { section } = await params;
@@ -52,7 +54,7 @@ export default async function SitePage({ params }: PageProps<"/admin/site/[secti
         {section === "favicon" ? <FaviconForm url={s.favicon.url} />
           : section === "seo-settings" ? <SeoForm seo={s.seo} pages={SEO_PAGES} />
           : section === "ai-visibility" ? <LlmsForm text={s.llms.text} generated={defaultLlms()} />
-          : spec && <SettingsForm sectionKey={spec.key} fields={spec.fields.map(({ pattern: _p, patternHelp: _h, ...f }) => f)} values={(s as unknown as Record<string, Record<string, string>>)[spec.key]} />}
+          : spec && <SettingsForm sectionKey={spec.key} fields={clientFields(spec)} values={(s as unknown as Record<string, Record<string, string>>)[spec.key]} />}
       </Card>
     </>
   );

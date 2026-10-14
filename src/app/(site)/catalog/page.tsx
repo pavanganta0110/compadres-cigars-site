@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import CatalogViewer from "@/components/CatalogViewer";
 import PageHeading from "@/components/PageHeading";
 import { CATALOG } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Catalog", alternates: { canonical: "/catalog" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/catalog", { title: "Catalog" });
+}
 
 export default function Page() {
   return (

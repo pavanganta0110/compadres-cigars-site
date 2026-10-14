@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 import ProductTile from "@/components/ProductTile";
 
-export const metadata: Metadata = { title: { absolute: "Compadres Cigars - online" }, alternates: { canonical: "/all-products" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/all-products", { title: { absolute: "Compadres Cigars - online" } });
+}
 
 const TILES = [
   { title: "Compadres Main Line", href: "/main-line-cigars", image: "/images/blob-2c0c5f8.png", position: "50% 88%", lines: ["Our main line of premium cigars", "Hand rolled"] },

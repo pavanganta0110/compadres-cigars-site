@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { requireAdmin } from "@/lib/admin-auth";
 import { SECTIONS } from "@/lib/settings";
 import { getStore } from "@/lib/store";
 import { signOut } from "../actions";
 import AdminNav, { type NavGroup } from "../AdminNav";
+import DynamicMarker from "../DynamicMarker";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 
 async function Shell({ children }: { children: React.ReactNode }) {
+  await connection(); // the admin is always per-request, even when no database is configured yet
   const admin = await requireAdmin();
   const store = getStore();
   let newCount = 0;
@@ -41,7 +45,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
         <div className="mt-auto border-t border-slate-200 pt-4 text-xs text-slate-500">
           <p className="mb-2 truncate px-3">{admin.email}</p>
           <form action={signOut}><button className="px-3 text-slate-600 underline hover:text-slate-900">Sign out</button></form>
-          <a href="/" className="mt-2 block px-3 text-slate-600 underline hover:text-slate-900">View website</a>
+          <Link href="/" className="mt-2 block px-3 text-slate-600 underline hover:text-slate-900">View website</Link>
         </div>
       </aside>
       <div className="min-w-0 flex-1">
@@ -55,7 +59,10 @@ async function Shell({ children }: { children: React.ReactNode }) {
             </div>
           </details>
         </header>
-        <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8">{children}</main>
+        <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8">
+          <Suspense fallback={null}><DynamicMarker /></Suspense>
+          {children}
+        </main>
       </div>
     </div>
   );

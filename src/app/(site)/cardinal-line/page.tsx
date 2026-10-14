@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 
-export const metadata: Metadata = { title: "Cardinal Line", alternates: { canonical: "/cardinal-line" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/cardinal-line", { title: "Cardinal Line" });
+}
 
 const ITEMS = [
   { src: "/images/cardinal-box-press.jpg", position: "50% 50%", name: "Compadres Cardinal Box Press", specs: ["60 x 6.75 Box Press Torpedo", "Tobacco aged 4 years", "Corojo wrap"] },

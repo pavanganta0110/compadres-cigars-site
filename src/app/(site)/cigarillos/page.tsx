@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 
-export const metadata: Metadata = { title: "Cigarillos", alternates: { canonical: "/cigarillos" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/cigarillos", { title: "Cigarillos" });
+}
 
 const ITEMS = [
   {

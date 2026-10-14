@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import CustomerForm from "@/components/CustomerForm";
 
-export const metadata: Metadata = { title: "Become a Customer", alternates: { canonical: "/become-a-customer" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/become-a-customer", { title: "Become a Customer" });
+}
 
 export default function Page() {
   return (

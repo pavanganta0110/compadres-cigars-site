@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Private Label Program", alternates: { canonical: "/private-label-program" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/private-label-program", { title: "Private Label Program" });
+}
 
 const STEPS = [
   { src: "/images/whatsapp-image-2023-11-06-at-13.51.50_90554904.jpg", title: "Create your cigar", alt: "Hands processing drying tobacco" },

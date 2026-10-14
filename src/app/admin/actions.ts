@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { adminEmails, requestOrigin, requireAdmin, supabaseAuthClient } from "@/lib/admin-auth";
 import { SECTIONS, SEO_PAGES, extractMetaContent, type SeoSettings } from "@/lib/settings";
 import { getStore, supabaseConfigured } from "@/lib/store";
@@ -129,6 +129,7 @@ export async function setInquiryStatus(fd: FormData) {
   const status = str(fd, "status") as InquiryStatus;
   if (!store || !STATUSES.includes(status)) return;
   await store.updateInquiry(str(fd, "id"), { status }, admin.email);
+  revalidatePath("/admin", "layout"); // refresh the list, detail page and the sidebar "new" count
 }
 
 export async function saveInquiryNotes(_prev: SaveState, fd: FormData): Promise<SaveState> {
@@ -136,5 +137,6 @@ export async function saveInquiryNotes(_prev: SaveState, fd: FormData): Promise<
   const store = getStore();
   if (!store) return { error: "The database isn't connected yet." };
   await store.updateInquiry(str(fd, "id"), { notes: str(fd, "notes") }, admin.email);
+  revalidatePath("/admin", "layout");
   return { ok: true };
 }

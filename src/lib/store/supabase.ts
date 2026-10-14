@@ -16,7 +16,8 @@ const safeName = (n: string) => n.replace(/[^\w.\- ]+/g, "_").slice(0, 120) || "
 // PostgREST .or() filters break on these characters.
 const cleanQ = (q: string) => q.replace(/[,()%*\\:]/g, " ").trim().slice(0, 80);
 
-function applyFilters<T extends { eq: (c: string, v: string) => T; or: (f: string) => T }>(q: T, f: InquiryFilter): T {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function applyFilters(q: any, f: InquiryFilter): any {
   if (f.status) q = q.eq("status", f.status);
   if (f.kind) q = q.eq("kind", f.kind);
   const s = f.q ? cleanQ(f.q) : "";

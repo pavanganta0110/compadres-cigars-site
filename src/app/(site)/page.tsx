@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Hero from "@/components/Hero";
 import { HERO_SLIDES } from "@/lib/site";
 
-export const metadata: Metadata = { title: { absolute: "Compadres Cigars" }, alternates: { canonical: "/" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/", { title: { absolute: "Compadres Cigars" } });
+}
 
 export default function Home() {
   return (

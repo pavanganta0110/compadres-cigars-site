@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { SECTIONS, loadSettings, sectionBySlug } from "@/lib/settings";
+import { SECTIONS, clientFields, loadSettings, sectionBySlug } from "@/lib/settings";
 import { getStore } from "@/lib/store";
 import SettingsForm from "../../../SettingsForm";
 import { Card, Notice, PageTitle } from "../../../ui";
+
+export const instant = false; // admin pages render per request; instant navigation isn't needed
 
 export default async function TrackingPage({ params }: PageProps<"/admin/tracking/[section]">) {
   const { section } = await params;
@@ -23,7 +25,7 @@ export default async function TrackingPage({ params }: PageProps<"/admin/trackin
         </Notice>
       )}
       <Card>
-        <SettingsForm sectionKey={spec.key} fields={spec.fields.map(({ pattern: _p, patternHelp: _h, ...f }) => f)} values={(s as unknown as Record<string, Record<string, string>>)[spec.key]} />
+        <SettingsForm sectionKey={spec.key} fields={clientFields(spec)} values={(s as unknown as Record<string, Record<string, string>>)[spec.key]} />
       </Card>
     </>
   );

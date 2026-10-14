@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 
-export const metadata: Metadata = { title: "Humidor Program", alternates: { canonical: "/humidor-program" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/humidor-program", { title: "Humidor Program" });
+}
 
 export default function Page() {
   return (

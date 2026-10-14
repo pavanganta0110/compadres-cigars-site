@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 
-export const metadata: Metadata = { title: "Dominican Blanks", alternates: { canonical: "/dominican-blanks" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/dominican-blanks", { title: "Dominican Blanks" });
+}
 
 export default function Page() {
   return (

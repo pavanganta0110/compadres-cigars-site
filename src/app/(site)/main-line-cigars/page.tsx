@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
 import { MAIN_LINE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Main Line Cigars", alternates: { canonical: "/main-line-cigars" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/main-line-cigars", { title: "Main Line Cigars" });
+}
 
 const gap = <div className="h-6" aria-hidden />;
 

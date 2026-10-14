@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getStore } from "@/lib/store";
@@ -5,10 +6,14 @@ import { setInquiryStatus } from "../../../actions";
 import { Card, PageTitle, STATUS_LABEL, StatusBadge, btnGhost, fmtDate } from "../../../ui";
 import NotesForm from "./NotesForm";
 
+export const metadata: Metadata = { title: "Inquiry", robots: { index: false, follow: false } };
+
 const LABELS: Record<string, string> = {
   firstName: "First name", lastName: "Last name", company: "Company", address: "Shipping address", city: "City", state: "State",
   zip: "Zip", email: "Email", phone: "Phone", message: "Message", paymentMethod: "Payment method", name: "Name",
 };
+
+export const instant = false; // admin pages render per request; instant navigation isn't needed
 
 export default async function InquiryPage({ params }: PageProps<"/admin/inquiries/[id]">) {
   const { id } = await params;
@@ -63,4 +68,9 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
       </div>
     </>
   );
+}
+
+// One placeholder so Next can prerender the page shell; real ids are rendered on demand.
+export function generateStaticParams() {
+  return [{ id: "00000000-0000-0000-0000-000000000000" }];
 }

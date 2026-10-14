@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import PageHeading from "@/components/PageHeading";
 import { GALLERY_COLUMNS, type GalleryImage } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Gallery", alternates: { canonical: "/gallery" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/gallery", { title: "Gallery" });
+}
 
 // Masonry like the original: N columns, tops aligned, each photo goes into the currently shortest column.
 function masonry(images: GalleryImage[], cols: number) {

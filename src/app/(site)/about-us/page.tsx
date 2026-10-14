@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/settings";
 import PageHeading from "@/components/PageHeading";
 
-export const metadata: Metadata = { title: "About Us", alternates: { canonical: "/about-us" } };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/about-us", { title: "About Us" });
+}
 
 export default function Page() {
   return (

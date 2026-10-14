@@ -103,6 +103,10 @@ export const SECTIONS: Section[] = [
   },
 ];
 
+/** Fields without the (non-serialisable) regex patterns, safe to pass to client components. */
+export const clientFields = (spec: Section) =>
+  spec.fields.map(({ name, label, kind, placeholder, help, max }) => ({ name, label, kind, placeholder, help, max }));
+
 export const sectionBySlug = (slug: string) => SECTIONS.find((s) => s.slug === slug);
 
 /** Pages whose title/description can be overridden in SEO Settings. */
@@ -220,7 +224,7 @@ export async function loadSettings(): Promise<Settings> {
 export async function getSettings(): Promise<Settings> {
   "use cache";
   cacheTag("settings");
-  cacheLife("minutes");
+  cacheLife("hours");
   return loadSettings();
 }
 
