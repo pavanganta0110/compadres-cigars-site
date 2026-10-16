@@ -8,19 +8,20 @@ import { getStore } from "@/lib/store";
 // instance; it limits casual abuse, it is not a hard guarantee.
 const hits = new Map<string, number[]>();
 const WINDOW_MS = 10 * 60 * 1000;
-const MAX_STARTS = 5;
+const MAX_STARTS = 10;
 
 function tooMany(ip: string): boolean {
   const now = Date.now();
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_STARTS) {
-    hits.set(ip, recent);
-    return true;
-  }
-  recent.push(now);
   hits.set(ip, recent);
+  return recent.length >= MAX_STARTS;
+}
+
+// Only sessions that really started count, so errors and retries never lock a customer out.
+function recordStart(ip: string) {
+  const now = Date.now();
+  hits.set(ip, [...(hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS), now]);
   if (hits.size > 5000) for (const [k, v] of hits) if (v.every((t) => now - t >= WINDOW_MS)) hits.delete(k);
-  return false;
 }
 
 export async function POST(request: Request) {
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
     const origin = process.env.SITE_URL?.replace(/\/+$/, "") || new URL(request.url).origin;
     const session = await createSession({ vendorData: row.id, callback: `${origin}/verify/return?v=${row.id}` });
     await store.attachVerificationSession(row.id, session.sessionId);
+    recordStart(ip);
     return Response.json({ id: row.id, url: session.url }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("verify/start failed", e);

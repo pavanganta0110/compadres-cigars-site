@@ -38,6 +38,12 @@ export function mapStatus(s: unknown): VerificationStatus {
   }
 }
 
+/** Error for a failed Didit call. Includes Didit's own message (e.g. "Workflow not found") so logs say what to fix. */
+async function diditFailure(what: string, res: Response): Promise<Error> {
+  const body = (await res.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 300);
+  return new Error(`${what}: HTTP ${res.status}${body ? ` ${body}` : ""}`);
+}
+
 export async function createSession(opts: { vendorData: string; callback: string }): Promise<{ sessionId: string; url: string }> {
   const workflowId = process.env.DIDIT_WORKFLOW_ID;
   if (!workflowId) throw new Error("DIDIT_WORKFLOW_ID is not set");
@@ -54,7 +60,7 @@ export async function createSession(opts: { vendorData: string; callback: string
     }),
     signal: AbortSignal.timeout(10_000),
   });
-  if (!res.ok) throw new Error(`Didit create session failed: HTTP ${res.status}`);
+  if (!res.ok) throw await diditFailure("Didit create session failed", res);
   const json = (await res.json()) as { session_id?: unknown; url?: unknown };
   if (!isUuid(json.session_id) || typeof json.url !== "string" || !json.url.startsWith("https://")) {
     throw new Error("Didit create session returned an unexpected response");
@@ -72,7 +78,7 @@ export async function fetchDecision(sessionId: string, now = Date.now()): Promis
     cache: "no-store",
     signal: AbortSignal.timeout(10_000),
   });
-  if (!res.ok) throw new Error(`Didit decision fetch failed: HTTP ${res.status}`);
+  if (!res.ok) throw await diditFailure("Didit decision fetch failed", res);
   return decisionFrom(await res.json(), now);
 }
 
