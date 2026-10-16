@@ -40,8 +40,34 @@ export type Stats = {
   new_count: number;
 };
 
+export type VerificationStatus = "pending" | "approved" | "declined" | "in_review" | "expired";
+
+/** Outcome of a Didit ID check. No ID data is kept, only the result and a server-computed 21+ flag. */
+export type AgeVerification = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  didit_session_id: string | null;
+  status: VerificationStatus;
+  age_ok: boolean;
+  used_at: string | null;
+};
+
+/** An approved verification can be spent on one application, within this window of being created. */
+export const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+
 export interface Store {
   readonly kind: "supabase" | "dev-file";
+  createVerification(): Promise<AgeVerification>;
+  getVerification(id: string): Promise<AgeVerification | null>;
+  getVerificationBySession(sessionId: string): Promise<AgeVerification | null>;
+  attachVerificationSession(id: string, sessionId: string): Promise<void>;
+  /** Records a Didit result. A not-yet-final status never overwrites a final one, and spent rows never change. */
+  applyVerificationResult(id: string, status: VerificationStatus, ageOk: boolean): Promise<void>;
+  /** Atomically spends an approved, 21+, unused, unexpired verification. Returns false if it can't be spent. */
+  claimVerification(id: string): Promise<boolean>;
+  /** Un-spends a claim when the application could not be saved, so the customer doesn't pay for a second check. */
+  releaseVerification(id: string): Promise<void>;
   insertInquiry(i: NewInquiry): Promise<string>;
   attachLicense(id: string, filename: string, bytes: Buffer, contentType: string): Promise<void>;
   listInquiries(f: InquiryFilter): Promise<{ rows: Inquiry[]; total: number }>;

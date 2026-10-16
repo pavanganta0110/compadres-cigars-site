@@ -1,4 +1,5 @@
 import { checkUpload, deliverInquiry, parseInquiry, type Attachment, type InquiryKind } from "@/lib/inquiry";
+import { isUuid } from "@/lib/didit";
 import { getStore } from "@/lib/store";
 
 export async function POST(request: Request) {
@@ -26,17 +27,34 @@ export async function POST(request: Request) {
   const parsed = parseInquiry(kind, body);
   if (!parsed.ok) return Response.json({ error: parsed.error }, { status: 400 });
 
+  // A customer application needs a completed Didit ID check showing 21+. Enforced here, on the server:
+  // the form's own button state is only a convenience. Each verification can be spent once.
+  let claimedVerification: string | null = null;
+  const store = getStore();
+  if (kind === "customer") {
+    const vid = body.verificationId;
+    if (!store || !isUuid(vid) || !(await store.claimVerification(vid).catch(() => false))) {
+      return Response.json({ error: "Please complete ID verification (21+) before submitting your application." }, { status: 403 });
+    }
+    claimedVerification = vid;
+    parsed.data.ageVerified = "Yes (Didit ID check, 21+)";
+    parsed.data.verificationId = vid;
+  }
+  const release = () => (claimedVerification && store ? store.releaseVerification(claimedVerification).catch(() => {}) : Promise.resolve());
+
   let attachment: Attachment | undefined;
   if (file) {
     const problem = checkUpload(file);
-    if (problem) return Response.json({ error: problem }, { status: 400 });
+    if (problem) {
+      await release(); // the customer can fix the file and resubmit without a second ID check
+      return Response.json({ error: problem }, { status: 400 });
+    }
     attachment = { filename: file.name, content: Buffer.from(await file.arrayBuffer()).toString("base64") };
   }
 
   // 1) Save to the dashboard database (if configured). 2) Email a copy (if configured).
   const d = parsed.data;
   let saved = false;
-  const store = getStore();
   if (store) {
     try {
       const id = await store.insertInquiry({
@@ -56,6 +74,7 @@ export async function POST(request: Request) {
   }
   const emailed = await deliverInquiry(kind, d, attachment).catch(() => false);
   if (!saved && !emailed) {
+    await release();
     return Response.json(
       { error: "We couldn't send your message right now. Please call us at (816) 878-3545." },
       { status: 503 },
