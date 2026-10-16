@@ -19,3 +19,9 @@ create index if not exists age_verifications_created_idx on public.age_verificat
 
 alter table public.age_verifications enable row level security;
 -- (intentionally no policies: deny-all for anon/authenticated; service_role bypasses RLS)
+
+-- Newer Supabase projects don't auto-grant table privileges to service_role for tables created in SQL.
+-- The server (service role) needs them; anon/authenticated still get nothing (RLS on, no policies).
+grant usage on schema public to service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
