@@ -26,6 +26,16 @@ npm run lint && npx tsc --noEmit && npm run build
 - Env: `AGE_GATE_SECRET` (**required in production**; without it the site stays gated and confirming returns 500, by design), `AGE_GATE_TTL_DAYS` (default 30), `AGE_GATE_EXIT_URL`.
 - Search engines: verified Googlebot and Bingbot (reverse+forward DNS check, cached) may read public pages and images, but not `/files/` or `/api/`. A spoofed `User-Agent` does not get through. Everyone else is gated.
 
+## ID verification (Didit) on "Become a Customer"
+
+Browsing needs only the 21+ gate above. **Applying to become a customer additionally requires a Didit ID check** (merchant-bank requirement).
+
+- Flow: the form's "Verify my age" button POSTs `/api/verify/start`, which creates a Didit session server-side (`POST /v3/session/`, key in `DIDIT_API_KEY`, `vendor_data` = our verification id) and returns Didit's hosted URL, opened in a new tab. The form polls `/api/verify/status`.
+- Result: Didit calls `/api/didit/webhook` (open to the internet; the proxy lets it through). It is accepted only with a valid `X-Signature-V2` (or `X-Signature`) HMAC and a timestamp within 5 minutes, using `DIDIT_WEBHOOK_SECRET`. Even then the status is **re-fetched from Didit** (`GET /v3/session/{id}/decision/`), and 21+ is computed by us from the ID's date of birth (`src/lib/didit.ts`). `/api/verify/status` also asks Didit directly, so a delayed webhook doesn't block anyone.
+- Enforcement is on the server: `/api/inquiry` rejects a `customer` submission (403) unless it carries a `verificationId` that is approved, 21+, unused and under 24 hours old. Each verification is spent once (atomic claim) and released again if the application can't be saved.
+- Stored: only the outcome in `age_verifications` (migration `0002`). No ID images, numbers or dates of birth.
+- Setup: create a workflow in the Didit Console (ID verification only; no liveness or face match, so it does not prove the person holding the ID is its owner), add the webhook destination `https://<domain>/api/didit/webhook`, set `DIDIT_API_KEY`, `DIDIT_WORKFLOW_ID`, `DIDIT_WEBHOOK_SECRET`, `SITE_URL`, then run `0002_age_verifications.sql`. Without these, applications are refused by design.
+
 ## Known differences from the original site
 
 - **Credit card fields removed.** The old Become-a-Customer form collected card number/CVV through a third-party widget. Card data must not go through a plain form or email. The Credit Card checkbox stays (customers are contacted to pay securely). To take cards online, use a hosted payment page/link from your processor.

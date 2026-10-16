@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { HistoryRow, Inquiry, InquiryFilter, NewInquiry, PageView, Stats, Store } from "./types";
+import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type PageView, type Stats, type Store, type VerificationStatus } from "./types";
 
 let client: SupabaseClient | null = null;
 function db(): SupabaseClient {
@@ -27,6 +27,57 @@ function applyFilters(q: any, f: InquiryFilter): any {
 
 export const supabaseStore: Store = {
   kind: "supabase",
+
+  async createVerification() {
+    const { data, error } = await db().from("age_verifications").insert({}).select("*").single();
+    if (error) throw error;
+    return data as AgeVerification;
+  },
+
+  async getVerification(id) {
+    const { data, error } = await db().from("age_verifications").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    return (data as AgeVerification) ?? null;
+  },
+
+  async getVerificationBySession(sessionId) {
+    const { data, error } = await db().from("age_verifications").select("*").eq("didit_session_id", sessionId).maybeSingle();
+    if (error) throw error;
+    return (data as AgeVerification) ?? null;
+  },
+
+  async attachVerificationSession(id, sessionId) {
+    const { error } = await db().from("age_verifications").update({ didit_session_id: sessionId, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) throw error;
+  },
+
+  async applyVerificationResult(id, status: VerificationStatus, ageOk) {
+    let q = db().from("age_verifications").update({ status, age_ok: status === "approved" && ageOk, updated_at: new Date().toISOString() }).eq("id", id).is("used_at", null);
+    // Never let an in-progress update (e.g. a late, out-of-order webhook) overwrite a result we already have.
+    if (status === "pending") q = q.eq("status", "pending");
+    const { error } = await q;
+    if (error) throw error;
+  },
+
+  async claimVerification(id) {
+    const cutoff = new Date(Date.now() - VERIFICATION_TTL_MS).toISOString();
+    const { data, error } = await db()
+      .from("age_verifications")
+      .update({ used_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("status", "approved")
+      .eq("age_ok", true)
+      .is("used_at", null)
+      .gte("created_at", cutoff)
+      .select("id");
+    if (error) throw error;
+    return (data ?? []).length === 1;
+  },
+
+  async releaseVerification(id) {
+    const { error } = await db().from("age_verifications").update({ used_at: null }).eq("id", id);
+    if (error) throw error;
+  },
 
   async insertInquiry(i: NewInquiry) {
     const { data, error } = await db().from("inquiries").insert(i).select("id").single();

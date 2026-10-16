@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { nowMs } from "@/lib/clock";
-import type { HistoryRow, Inquiry, InquiryFilter, NewInquiry, PageView, Stats, Store } from "./types";
+import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type PageView, type Stats, type Store } from "./types";
 
 // DEVELOPMENT-ONLY stand-in for Supabase so the dashboard can be built and tested locally.
 // index.ts refuses to use this when NODE_ENV === "production".
@@ -14,6 +14,7 @@ type DB = {
   settings: Record<string, unknown>;
   history: (HistoryRow & { old?: unknown; new?: unknown })[];
   views: (PageView & { day: string })[];
+  verifications?: AgeVerification[];
 };
 
 function load(): DB {
@@ -41,6 +42,45 @@ function filtered(d: DB, f: InquiryFilter) {
 
 export const fileStore: Store = {
   kind: "dev-file",
+
+  async createVerification() {
+    const d = load();
+    const now = new Date().toISOString();
+    const row: AgeVerification = { id: randomUUID(), created_at: now, updated_at: now, didit_session_id: null, status: "pending", age_ok: false, used_at: null };
+    (d.verifications ??= []).push(row);
+    save(d);
+    return row;
+  },
+  async getVerification(id) { return load().verifications?.find((v) => v.id === id) ?? null; },
+  async getVerificationBySession(sessionId) { return load().verifications?.find((v) => v.didit_session_id === sessionId) ?? null; },
+  async attachVerificationSession(id, sessionId) {
+    const d = load();
+    const v = d.verifications?.find((x) => x.id === id);
+    if (v) { v.didit_session_id = sessionId; v.updated_at = new Date().toISOString(); save(d); }
+  },
+  async applyVerificationResult(id, status, ageOk) {
+    const d = load();
+    const v = d.verifications?.find((x) => x.id === id);
+    if (!v || v.used_at) return;
+    if (status === "pending" && v.status !== "pending") return;
+    v.status = status;
+    v.age_ok = status === "approved" && ageOk;
+    v.updated_at = new Date().toISOString();
+    save(d);
+  },
+  async claimVerification(id) {
+    const d = load();
+    const v = d.verifications?.find((x) => x.id === id);
+    if (!v || v.used_at || v.status !== "approved" || !v.age_ok || Date.parse(v.created_at) < Date.now() - VERIFICATION_TTL_MS) return false;
+    v.used_at = new Date().toISOString();
+    save(d);
+    return true;
+  },
+  async releaseVerification(id) {
+    const d = load();
+    const v = d.verifications?.find((x) => x.id === id);
+    if (v) { v.used_at = null; save(d); }
+  },
 
   async insertInquiry(i: NewInquiry) {
     const d = load();
