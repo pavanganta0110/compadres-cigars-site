@@ -26,6 +26,13 @@ function tooMany(ip: string): boolean {
 export async function POST(request: Request) {
   const store = getStore();
   if (!diditConfigured() || !store) {
+    // Names only, never values: tells whoever reads the server log what to set.
+    const missing = [
+      !process.env.DIDIT_API_KEY && "DIDIT_API_KEY",
+      !process.env.DIDIT_WORKFLOW_ID && "DIDIT_WORKFLOW_ID",
+      !store && "Supabase (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY)",
+    ].filter(Boolean);
+    console.error(`verify/start unavailable, missing: ${missing.join(", ")}`);
     return Response.json({ error: "ID verification isn't available right now. Please call us at (816) 878-3545." }, { status: 503 });
   }
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
