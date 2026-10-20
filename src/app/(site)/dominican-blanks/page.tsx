@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
+import AddToCart from "@/components/AddToCart";
 import PageHeading from "@/components/PageHeading";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,6 +27,14 @@ export default function Page() {
               <p>50 X 5 &nbsp;ROBUSTO</p>
               <p>ALL AVAILABLE IN BUNDLES OF 25 CIGARS</p>
             </div>
+            <AddToCart
+              options={[
+                { id: "blanks-gran-corona", label: "Gran Corona 60 x 6" },
+                { id: "blanks-toro", label: "Toro 52 x 6" },
+                { id: "blanks-robusto", label: "Robusto 50 x 5" },
+              ]}
+              unit="bundle of 25"
+            />
           </div>
         </div>
       </section>

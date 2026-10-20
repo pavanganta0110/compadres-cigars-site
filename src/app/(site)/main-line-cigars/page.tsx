@@ -3,7 +3,9 @@ import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
 import PageHeading from "@/components/PageHeading";
+import AddToCart from "@/components/AddToCart";
 import { MAIN_LINE } from "@/lib/site";
+import { mainLineId } from "@/lib/shop";
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMeta("/main-line-cigars", { title: "Main Line Cigars" });
@@ -33,6 +35,7 @@ export default function Page() {
                 {c.second.map((l) => <p key={l}>{l}</p>)}
                 {gap}
                 {c.final.map((l) => <p key={l}>{l}</p>)}
+                <AddToCart options={[{ id: mainLineId(c.name), label: c.name }]} unit="box" />
               </article>
             ))}
           </div>

@@ -1,13 +1,15 @@
-export type InquiryKind = "contact" | "customer";
+export type InquiryKind = "contact" | "customer" | "order";
 
 export const FIELDS: Record<InquiryKind, string[]> = {
   contact: ["name", "email", "message"],
   customer: ["firstName", "lastName", "company", "address", "city", "state", "zip", "email", "phone", "message", "paymentMethod"],
+  order: ["firstName", "lastName", "company", "address", "city", "state", "zip", "email", "phone", "message"],
 };
 
 const REQUIRED: Record<InquiryKind, string[]> = {
   contact: ["email", "message"],
   customer: ["firstName", "lastName", "company", "address", "city", "state", "zip", "email", "phone"],
+  order: ["firstName", "lastName", "company", "address", "city", "state", "zip", "email", "phone"],
 };
 
 const MAX = 4000;
@@ -44,7 +46,7 @@ export async function deliverInquiry(kind: InquiryKind, data: Record<string, str
       from,
       to: to.split(",").map((s) => s.trim()),
       reply_to: data.email,
-      subject: kind === "customer" ? "New customer application — Compadres Cigars" : "New website inquiry — Compadres Cigars",
+      subject: kind === "customer" ? "New customer application — Compadres Cigars" : kind === "order" ? "New order request — Compadres Cigars" : "New website inquiry — Compadres Cigars",
       text: lines,
       ...(attachment ? { attachments: [attachment] } : {}),
     }),
