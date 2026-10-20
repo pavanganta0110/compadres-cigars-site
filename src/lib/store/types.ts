@@ -1,4 +1,4 @@
-export type InquiryKind = "contact" | "customer";
+export type InquiryKind = "contact" | "customer" | "order";
 export type InquiryStatus = "new" | "in_progress" | "handled" | "spam";
 
 export type Inquiry = {

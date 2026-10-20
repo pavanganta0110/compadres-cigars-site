@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import CartLink from "@/components/CartLink";
 import { NAV, NAV_WIDE, SITE, type NavItem } from "@/lib/site";
 
 // The original highlights only direct matches; "Products" is a menu and never highlights.
@@ -92,6 +93,7 @@ export default function Header({ phone = SITE.phone }: { phone?: string }) {
               </li>
             ))}
           </ul>
+          <CartLink />
         </nav>
 
         {open && (

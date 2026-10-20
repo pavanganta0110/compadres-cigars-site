@@ -11,7 +11,7 @@ export const instant = false; // admin pages render per request; instant navigat
 export default async function Inquiries({ searchParams }: PageProps<"/admin/inquiries">) {
   const sp = (await searchParams) as Record<string, string | undefined>;
   const status = STATUSES.includes(sp.status as InquiryStatus) ? (sp.status as InquiryStatus) : undefined;
-  const kind: InquiryKind | undefined = sp.kind === "contact" || sp.kind === "customer" ? sp.kind : undefined;
+  const kind: InquiryKind | undefined = sp.kind === "contact" || sp.kind === "customer" || sp.kind === "order" ? sp.kind : undefined;
   const q = (sp.q ?? "").slice(0, 80);
   const page = Math.max(1, Number(sp.page) || 1);
 
@@ -42,7 +42,7 @@ export default async function Inquiries({ searchParams }: PageProps<"/admin/inqu
         <div className="min-w-48 flex-1"><label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="q">Search</label>
           <input id="q" name="q" defaultValue={q} placeholder="Name, email, company, message…" className={inputCls} /></div>
         <div><label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="kind">Type</label>
-          <select id="kind" name="kind" defaultValue={kind ?? ""} className={inputCls}><option value="">All</option><option value="contact">Contact form</option><option value="customer">Customer application</option></select></div>
+          <select id="kind" name="kind" defaultValue={kind ?? ""} className={inputCls}><option value="">All</option><option value="contact">Contact form</option><option value="customer">Customer application</option><option value="order">Order request</option></select></div>
         <div><label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="status">Status</label>
           <select id="status" name="status" defaultValue={status ?? ""} className={inputCls}><option value="">All</option>{STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}</select></div>
         <button className={btnCls}>Filter</button>
@@ -59,7 +59,7 @@ export default async function Inquiries({ searchParams }: PageProps<"/admin/inqu
             {rows.map((i) => (
               <tr key={i.id} className="hover:bg-slate-50">
                 <td className="whitespace-nowrap px-4 py-3"><Link href={`/admin/inquiries/${i.id}`} className="font-medium text-[#0e7c86] underline">{fmtDate(i.created_at)}</Link></td>
-                <td className="px-4 py-3">{i.kind === "customer" ? "Customer application" : "Contact"}{i.license_path && <span title="License attached"> 📎</span>}</td>
+                <td className="px-4 py-3">{i.kind === "customer" ? "Customer application" : i.kind === "order" ? "Order request" : "Contact"}{i.license_path && <span title="License attached"> 📎</span>}</td>
                 <td className="px-4 py-3">{i.company || i.name || "—"}</td>
                 <td className="px-4 py-3">{i.email}</td>
                 <td className="px-4 py-3"><StatusBadge status={i.status} /></td>

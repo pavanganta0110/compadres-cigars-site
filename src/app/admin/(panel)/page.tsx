@@ -108,7 +108,7 @@ export default async function Dashboard() {
                 <Link href={`/admin/inquiries/${i.id}`} className="flex items-center justify-between gap-4 py-3 hover:bg-slate-50">
                   <div className="min-w-0">
                     <p className="truncate font-medium">{i.company || i.name || i.email}</p>
-                    <p className="truncate text-sm text-slate-500">{i.kind === "customer" ? "Customer application" : "Contact form"} · {fmtDate(i.created_at)}</p>
+                    <p className="truncate text-sm text-slate-500">{i.kind === "customer" ? "Customer application" : i.kind === "order" ? "Order request" : "Contact form"} · {fmtDate(i.created_at)}</p>
                   </div>
                   <StatusBadge status={i.status} />
                 </Link>

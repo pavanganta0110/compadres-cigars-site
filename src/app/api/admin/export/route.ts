@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
   const sp = new URL(request.url).searchParams;
   const status = ["new", "in_progress", "handled", "spam"].includes(sp.get("status") ?? "") ? (sp.get("status") as InquiryStatus) : undefined;
-  const kind = ["contact", "customer"].includes(sp.get("kind") ?? "") ? (sp.get("kind") as InquiryKind) : undefined;
+  const kind = ["contact", "customer", "order"].includes(sp.get("kind") ?? "") ? (sp.get("kind") as InquiryKind) : undefined;
   const rows = await store.exportInquiries({ status, kind, q: (sp.get("q") ?? "").slice(0, 80) });
 
   const head = ["Received", "Type", "Status", "Name", "Company", "Email", "Phone", "Shipping address", "City", "State", "Zip", "Payment method", "Message", "License file", "Notes"];

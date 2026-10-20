@@ -11,6 +11,7 @@ export const metadata: Metadata = { title: "Inquiry", robots: { index: false, fo
 const LABELS: Record<string, string> = {
   firstName: "First name", lastName: "Last name", company: "Company", address: "Shipping address", city: "City", state: "State",
   zip: "Zip", email: "Email", phone: "Phone", message: "Message", paymentMethod: "Payment method", name: "Name",
+  items: "Order items", ageVerified: "21+ ID check", verificationId: "Verification id", acceptedTerms: "Accepted terms",
 };
 
 export const instant = false; // admin pages render per request; instant navigation isn't needed
@@ -27,7 +28,7 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
     <>
       <Link href="/admin/inquiries" className="mb-3 inline-block text-sm text-slate-500 underline">← All inquiries</Link>
       <PageTitle title={i.company || i.name || i.email}>
-        {i.kind === "customer" ? "Customer application" : "Contact form"} · received {fmtDate(i.created_at)}
+        {i.kind === "customer" ? "Customer application" : i.kind === "order" ? "Order request" : "Contact form"} · received {fmtDate(i.created_at)}
       </PageTitle>
 
       <div className="grid gap-6 lg:grid-cols-3">

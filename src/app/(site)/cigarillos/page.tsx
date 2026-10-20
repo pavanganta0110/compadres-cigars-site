@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
+import AddToCart from "@/components/AddToCart";
 import PageHeading from "@/components/PageHeading";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,10 +13,14 @@ const ITEMS = [
   {
     src: "/images/blob-3c1a27b.png", alt: "Compadres Cigarillos", name: "Compadres Cigarillos",
     lines: ["Hand rolled cigarillos", "10 cigarillos per wooden tray", "Cognac", "Cherry", "Vanilla", "Chocolate", "Espresso", "Variety"],
+    options: ["Cognac", "Cherry", "Vanilla", "Chocolate", "Espresso", "Variety"].map((f) => ({ id: `cigarillos-${f.toLowerCase()}`, label: f })),
+    unit: "tray of 10",
   },
   {
     src: "/images/blob-52c26e1.png", alt: "Compadres Cognac Robusto", name: "Compadres Cognac Robusto",
     lines: ["50 x 5", "Bundles of 25 cigars"],
+    options: [{ id: "cognac-robusto", label: "Cognac Robusto" }],
+    unit: "bundle of 25",
   },
 ];
 
@@ -35,6 +40,7 @@ export default function Page() {
                 <div className="mt-6 leading-6 text-muted">
                   {i.lines.map((l) => <p key={l} className="uppercase">{l}</p>)}
                 </div>
+                <AddToCart options={i.options} unit={i.unit} />
               </article>
             ))}
           </div>

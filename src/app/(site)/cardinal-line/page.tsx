@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/settings";
 import Image from "next/image";
 import DownloadCard from "@/components/DownloadCard";
+import AddToCart from "@/components/AddToCart";
 import PageHeading from "@/components/PageHeading";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,8 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const ITEMS = [
-  { src: "/images/cardinal-box-press.jpg", position: "50% 50%", name: "Compadres Cardinal Box Press", specs: ["60 x 6.75 Box Press Torpedo", "Tobacco aged 4 years", "Corojo wrap"] },
-  { src: "/images/blob-e8367a6.png", position: "50% 70%", name: "Compadres Cardinal Perfecto", specs: ["60 x 6 Perfecto", "Tobacco aged 4 years", "Corojo wrap"] },
+  { id: "cardinal-box-press", src: "/images/cardinal-box-press.jpg", position: "50% 50%", name: "Compadres Cardinal Box Press", specs: ["60 x 6.75 Box Press Torpedo", "Tobacco aged 4 years", "Corojo wrap"] },
+  { id: "cardinal-perfecto", src: "/images/blob-e8367a6.png", position: "50% 70%", name: "Compadres Cardinal Perfecto", specs: ["60 x 6 Perfecto", "Tobacco aged 4 years", "Corojo wrap"] },
 ];
 
 export default function Page() {
@@ -29,6 +30,7 @@ export default function Page() {
                 <div className="mt-6 leading-6 text-muted">
                   {i.specs.map((s) => <p key={s} className="uppercase">{s}</p>)}
                 </div>
+                <AddToCart options={[{ id: i.id, label: i.name }]} unit="box" />
               </article>
             ))}
           </div>
