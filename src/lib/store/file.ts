@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { nowMs } from "@/lib/clock";
-import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type PageView, type Stats, type Store } from "./types";
+import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type NewPaymentRequest, type PageView, type PaymentRequest, type Stats, type Store } from "./types";
 
 // DEVELOPMENT-ONLY stand-in for Supabase so the dashboard can be built and tested locally.
 // index.ts refuses to use this when NODE_ENV === "production".
@@ -15,6 +15,7 @@ type DB = {
   history: (HistoryRow & { old?: unknown; new?: unknown })[];
   views: (PageView & { day: string })[];
   verifications?: AgeVerification[];
+  payments?: PaymentRequest[];
 };
 
 function load(): DB {
@@ -42,6 +43,35 @@ function filtered(d: DB, f: InquiryFilter) {
 
 export const fileStore: Store = {
   kind: "dev-file",
+
+  async createPaymentRequest(p: NewPaymentRequest) {
+    const d = load();
+    const now = new Date().toISOString();
+    const row: PaymentRequest = { id: randomUUID(), created_at: now, updated_at: now, status: "pending", paid_at: null, transaction_id: null, ...p };
+    (d.payments ??= []).push(row);
+    save(d);
+    return row;
+  },
+  async getPaymentRequestByToken(token) { return load().payments?.find((p) => p.token === token) ?? null; },
+  async getPaymentRequestByInvoice(invoice) { return load().payments?.find((p) => p.invoice_number === invoice) ?? null; },
+  async listPaymentRequests(inquiryId) {
+    return (load().payments ?? []).filter((p) => p.inquiry_id === inquiryId).sort((a, b) => b.created_at.localeCompare(a.created_at));
+  },
+  async cancelPaymentRequest(id) {
+    const d = load();
+    const p = d.payments?.find((x) => x.id === id);
+    if (p && p.status === "pending") { p.status = "cancelled"; p.updated_at = new Date().toISOString(); save(d); }
+  },
+  async markPaymentPaid(id, transactionId) {
+    const d = load();
+    const p = d.payments?.find((x) => x.id === id);
+    if (!p || p.status === "paid") return false;
+    p.status = "paid";
+    p.paid_at = p.updated_at = new Date().toISOString();
+    p.transaction_id = transactionId;
+    save(d);
+    return true;
+  },
 
   async createVerification() {
     const d = load();

@@ -56,8 +56,37 @@ export type AgeVerification = {
 /** An approved verification can be spent on one application, within this window of being created. */
 export const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 
+export type PaymentStatus = "pending" | "paid" | "cancelled";
+
+/** A request for payment on an order. Card data is never stored: only the amount and the outcome. */
+export type PaymentRequest = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  inquiry_id: string;
+  token: string;
+  invoice_number: string;
+  amount_cents: number;
+  description: string | null;
+  status: PaymentStatus;
+  created_by: string | null;
+  paid_at: string | null;
+  transaction_id: string | null;
+};
+
+export type NewPaymentRequest = Pick<PaymentRequest, "inquiry_id" | "token" | "invoice_number" | "amount_cents" | "description" | "created_by">;
+
 export interface Store {
   readonly kind: "supabase" | "dev-file";
+  createPaymentRequest(p: NewPaymentRequest): Promise<PaymentRequest>;
+  getPaymentRequestByToken(token: string): Promise<PaymentRequest | null>;
+  getPaymentRequestByInvoice(invoice: string): Promise<PaymentRequest | null>;
+  listPaymentRequests(inquiryId: string): Promise<PaymentRequest[]>;
+  /** Cancels a request that is still pending (a paid one can't be cancelled). */
+  cancelPaymentRequest(id: string): Promise<void>;
+  /** Marks a request paid. Idempotent: returns false if it was already paid. Also applies to a request cancelled
+   *  after the customer had already started paying, because the money was taken. */
+  markPaymentPaid(id: string, transactionId: string): Promise<boolean>;
   createVerification(): Promise<AgeVerification>;
   getVerification(id: string): Promise<AgeVerification | null>;
   getVerificationBySession(sessionId: string): Promise<AgeVerification | null>;

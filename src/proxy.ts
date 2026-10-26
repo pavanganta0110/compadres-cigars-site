@@ -4,8 +4,9 @@ import { AGE_COOKIE, verifyAgeToken } from "@/lib/age-gate";
 import { isVerifiedCrawler } from "@/lib/crawler";
 
 // Every request needs a valid signed age cookie, except the gate itself and a few public files.
-// /api/didit/webhook is called by Didit's servers (no cookie); it authenticates every request by HMAC signature.
-const OPEN = new Set(["/age-gate", "/api/age-verify", "/api/didit/webhook", "/robots.txt", "/llms.txt", "/favicon.ico", "/icon.png", "/apple-touch-icon.png"]);
+// /api/didit/webhook and /api/authnet/webhook are called by those services' servers (no cookie); each authenticates
+// every request by HMAC signature.
+const OPEN = new Set(["/age-gate", "/api/age-verify", "/api/didit/webhook", "/api/authnet/webhook", "/robots.txt", "/llms.txt", "/favicon.ico", "/icon.png", "/apple-touch-icon.png"]);
 
 // Next's image optimizer fetches /images/* internally WITHOUT the visitor's cookie, so gating them would
 // break every <Image>. They are product photos only; pages, PDFs and the API stay gated.

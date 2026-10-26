@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type PageView, type Stats, type Store, type VerificationStatus } from "./types";
+import { VERIFICATION_TTL_MS, type AgeVerification, type HistoryRow, type Inquiry, type InquiryFilter, type NewInquiry, type NewPaymentRequest, type PageView, type PaymentRequest, type Stats, type Store, type VerificationStatus } from "./types";
 
 let client: SupabaseClient | null = null;
 function db(): SupabaseClient {
@@ -27,6 +27,47 @@ function applyFilters(q: any, f: InquiryFilter): any {
 
 export const supabaseStore: Store = {
   kind: "supabase",
+
+  async createPaymentRequest(p: NewPaymentRequest) {
+    const { data, error } = await db().from("payment_requests").insert(p).select("*").single();
+    if (error) throw error;
+    return data as PaymentRequest;
+  },
+
+  async getPaymentRequestByToken(token) {
+    const { data, error } = await db().from("payment_requests").select("*").eq("token", token).maybeSingle();
+    if (error) throw error;
+    return (data as PaymentRequest) ?? null;
+  },
+
+  async getPaymentRequestByInvoice(invoice) {
+    const { data, error } = await db().from("payment_requests").select("*").eq("invoice_number", invoice).maybeSingle();
+    if (error) throw error;
+    return (data as PaymentRequest) ?? null;
+  },
+
+  async listPaymentRequests(inquiryId) {
+    const { data, error } = await db().from("payment_requests").select("*").eq("inquiry_id", inquiryId).order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as PaymentRequest[];
+  },
+
+  async cancelPaymentRequest(id) {
+    const { error } = await db().from("payment_requests").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", id).eq("status", "pending");
+    if (error) throw error;
+  },
+
+  async markPaymentPaid(id, transactionId) {
+    const now = new Date().toISOString();
+    const { data, error } = await db()
+      .from("payment_requests")
+      .update({ status: "paid", paid_at: now, updated_at: now, transaction_id: transactionId })
+      .eq("id", id)
+      .neq("status", "paid")
+      .select("id");
+    if (error) throw error;
+    return (data ?? []).length === 1;
+  },
 
   async createVerification() {
     const { data, error } = await db().from("age_verifications").insert({}).select("*").single();

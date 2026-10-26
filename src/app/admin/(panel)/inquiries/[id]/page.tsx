@@ -5,6 +5,7 @@ import { getStore } from "@/lib/store";
 import { setInquiryStatus } from "../../../actions";
 import { Card, PageTitle, STATUS_LABEL, StatusBadge, btnGhost, fmtDate } from "../../../ui";
 import NotesForm from "./NotesForm";
+import PaymentsCard from "./PaymentsCard";
 
 export const metadata: Metadata = { title: "Inquiry", robots: { index: false, follow: false } };
 
@@ -65,6 +66,7 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
             </div>
           </Card>
           <Card title="Internal notes"><NotesForm id={i.id} initial={i.notes ?? ""} /></Card>
+          {i.kind === "order" && <PaymentsCard inquiryId={i.id} />}
         </div>
       </div>
     </>

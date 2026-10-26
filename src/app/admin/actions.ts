@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath, updateTag } from "next/cache";
 import { adminEmails, requestOrigin, requireAdmin, supabaseAuthClient } from "@/lib/admin-auth";
+import { authnetConfigured, newInvoiceNumber, newPayToken, parseAmountToCents } from "@/lib/authnet";
 import { SECTIONS, SEO_PAGES, extractMetaContent, type SeoSettings } from "@/lib/settings";
 import { getStore, supabaseConfigured } from "@/lib/store";
 import type { InquiryStatus } from "@/lib/store/types";
@@ -139,4 +140,38 @@ export async function saveInquiryNotes(_prev: SaveState, fd: FormData): Promise<
   await store.updateInquiry(str(fd, "id"), { notes: str(fd, "notes") }, admin.email);
   revalidatePath("/admin", "layout");
   return { ok: true };
+}
+
+// ---- payment requests ------------------------------------------------------------------------------
+// The amount is set ONLY here, by a signed-in admin, after confirming the order with the customer. The
+// customer can never change it: their payment link carries only an unguessable token.
+export async function createPaymentRequest(_prev: SaveState, fd: FormData): Promise<SaveState> {
+  const admin = await requireAdmin();
+  const store = getStore();
+  if (!store) return { error: "The database isn't connected yet." };
+  if (!authnetConfigured()) return { error: "Payments aren't set up yet (Authorize.net keys missing)." };
+
+  const cents = parseAmountToCents(str(fd, "amount").replace(/^\$/, ""));
+  if (cents === null) return { error: "Enter an amount like 250 or 249.50 (up to $50,000)." };
+  const inquiry = await store.getInquiry(str(fd, "inquiryId"));
+  if (!inquiry || inquiry.kind !== "order") return { error: "Payments can only be requested for orders." };
+
+  await store.createPaymentRequest({
+    inquiry_id: inquiry.id,
+    token: newPayToken(),
+    invoice_number: newInvoiceNumber(),
+    amount_cents: cents,
+    description: str(fd, "description").trim().slice(0, 200) || "Compadres Cigars order",
+    created_by: admin.email,
+  });
+  revalidatePath("/admin", "layout");
+  return { ok: true };
+}
+
+export async function cancelPaymentRequest(fd: FormData) {
+  await requireAdmin();
+  const store = getStore();
+  if (!store) return;
+  await store.cancelPaymentRequest(str(fd, "id"));
+  revalidatePath("/admin", "layout");
 }
