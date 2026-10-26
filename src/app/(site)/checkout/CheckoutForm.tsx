@@ -1,47 +1,71 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AgeVerificationField, useAgeVerification } from "@/components/AgeVerification";
 import { Field, serif } from "@/components/FormField";
+import { formatUsd } from "@/lib/money";
 import { cartCount, clearCart, useCart } from "@/lib/cart";
-import { itemById } from "@/lib/shop";
+import { priceLines } from "@/lib/shop";
 
-// Order REQUEST: no payment is taken here. The 21+ ID check is required, and the server re-checks it.
+// Checkout: the 21+ ID check is required and the server re-checks it. The total is computed on the server
+// from the product list (the browser only sends product ids and quantities). After the order is saved we send
+// the customer to Authorize.net's hosted page to pay; card numbers are never entered on this site.
 export default function CheckoutForm() {
   const lines = useCart();
   const age = useAgeVerification();
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "paying" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const payForm = useRef<HTMLFormElement>(null);
+  const [payToken, setPayToken] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!age.verified || !age.vId) {
-      setError("Please complete the ID verification before submitting your order.");
+      setError("Please complete the ID verification before placing your order.");
       setState("error");
       return;
     }
     setState("sending");
     const fd = new FormData(e.currentTarget);
-    fd.set("items", JSON.stringify(lines));
+    fd.set("items", JSON.stringify(lines)); // ids and quantities only: the server prices the order
     fd.set("verificationId", age.vId);
     try {
       const res = await fetch("/api/order", { method: "POST", body: fd });
-      const json = await res.json().catch(() => ({}));
+      const json = (await res.json().catch(() => ({}))) as { error?: string; payToken?: string | null };
       if (!res.ok) throw new Error(json.error || "Something went wrong.");
       clearCart();
-      setState("done");
+      if (json.payToken) {
+        setPayToken(json.payToken);
+        setState("paying");
+        // Same-origin POST to our pay route, which hands the customer to Authorize.net's payment page.
+        setTimeout(() => payForm.current?.submit(), 0);
+      } else {
+        setState("done"); // order saved, but no payment link could be made right now
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setState("error");
     }
   }
 
+  if (state === "paying" && payToken) {
+    return (
+      <div className={`${serif} mx-auto max-w-[460px] rounded bg-white p-6 text-center`}>
+        <p role="status" className="font-bold">Order received. Taking you to our secure payment page…</p>
+        <form ref={payForm} method="POST" action={`/api/pay/${payToken}`} className="mt-4">
+          <button type="submit" className="rounded bg-[#197bff] px-6 py-3 font-bold text-white">Continue to secure payment</button>
+        </form>
+        <p className="mt-3 text-sm text-[#111]/60">Not redirected? Use the button above. You can also pay later from <Link href={`/pay/${payToken}`} className="text-[#197bff] underline">this page</Link>.</p>
+      </div>
+    );
+  }
+
   if (state === "done") {
     return (
       <div className={`${serif} mx-auto max-w-[460px] rounded bg-white p-6`}>
-        <p role="status" className="font-bold">Thank you. We&apos;ve received your order request.</p>
-        <p className="mt-3">We&apos;ll contact you to confirm pricing, shipping and payment before anything ships.</p>
+        <p role="status" className="font-bold">Thank you. We&apos;ve received your order.</p>
+        <p className="mt-3">We&apos;ll contact you shortly to arrange payment and shipping.</p>
       </div>
     );
   }
@@ -55,19 +79,28 @@ export default function CheckoutForm() {
     );
   }
 
+  const t = priceLines(lines);
   return (
     <div className={`${serif} mx-auto w-full max-w-[460px] rounded bg-white p-6`}>
       <h2 className="font-bold">Order summary ({cartCount(lines)} {cartCount(lines) === 1 ? "unit" : "units"})</h2>
       <ul className="mt-2 text-sm leading-6">
-        {lines.map((l) => {
-          const i = itemById(l.id);
-          return i ? <li key={l.id}>{l.qty} × {i.name} <span className="text-[#111]/60">({i.unit})</span></li> : null;
-        })}
+        {t.lines.map((l) => (
+          <li key={l.id} className="flex justify-between gap-3">
+            <span>{l.qty} × {l.name} <span className="text-[#111]/60">({l.unit})</span></span>
+            <span>{formatUsd(l.lineCents)}</span>
+          </li>
+        ))}
       </ul>
+      <dl className="mt-3 space-y-1 border-t border-[#111]/15 pt-3 text-sm">
+        <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatUsd(t.subtotalCents)}</dd></div>
+        <div className="flex justify-between"><dt>Shipping</dt><dd>{formatUsd(t.shippingCents)}</dd></div>
+        <div className="flex justify-between text-base font-bold"><dt>Total</dt><dd>{formatUsd(t.totalCents)}</dd></div>
+      </dl>
+      <p className="mt-2 text-xs text-[#111]/60">Prices exclude sales, excise or other taxes.</p>
       <p className="mt-1 text-sm"><Link href="/cart" className="text-[#197bff] underline">Edit cart</Link></p>
 
       <form onSubmit={onSubmit} className="mt-6">
-        <p className="mb-[21px] font-bold italic leading-[18px]">Where should we send and confirm this order?</p>
+        <p className="mb-[21px] font-bold italic leading-[18px]">Where should we ship this order?</p>
         <div className="grid grid-cols-2 gap-x-5 gap-y-5">
           <Field name="firstName" label="First Name" required half />
           <Field name="lastName" label="Last Name" required half />
@@ -104,9 +137,9 @@ export default function CheckoutForm() {
 
         <div className="mt-8 text-center">
           <button type="submit" disabled={state === "sending" || !age.verified} className="h-12 rounded bg-[#197bff] px-6 text-lg font-bold text-white transition hover:brightness-110 disabled:opacity-60">
-            {state === "sending" ? "…" : "Submit order request"}
+            {state === "sending" ? "…" : `Place order and pay ${formatUsd(t.totalCents)}`}
           </button>
-          <p className="mt-3 text-sm text-[#111]/60">No payment is taken now. We confirm pricing and payment with you first.</p>
+          <p className="mt-3 text-sm text-[#111]/60">You&apos;ll enter your card on our payment processor&apos;s secure page. We never see or store your card number.</p>
           {state === "error" && <p role="alert" className="mt-4 text-sm text-red-600">{error}</p>}
         </div>
       </form>

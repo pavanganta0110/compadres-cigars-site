@@ -5,13 +5,14 @@ import { getStore } from "@/lib/store";
 import { setInquiryStatus } from "../../../actions";
 import { Card, PageTitle, STATUS_LABEL, StatusBadge, btnGhost, fmtDate } from "../../../ui";
 import NotesForm from "./NotesForm";
+import PaymentsCard from "./PaymentsCard";
 
 export const metadata: Metadata = { title: "Inquiry", robots: { index: false, follow: false } };
 
 const LABELS: Record<string, string> = {
   firstName: "First name", lastName: "Last name", company: "Company", address: "Shipping address", city: "City", state: "State",
   zip: "Zip", email: "Email", phone: "Phone", message: "Message", paymentMethod: "Payment method", name: "Name",
-  items: "Order items", ageVerified: "21+ ID check", verificationId: "Verification id", acceptedTerms: "Accepted terms",
+  items: "Order items", orderTotal: "Order total", ageVerified: "21+ ID check", verificationId: "Verification id", acceptedTerms: "Accepted terms",
 };
 
 export const instant = false; // admin pages render per request; instant navigation isn't needed
@@ -65,6 +66,7 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
             </div>
           </Card>
           <Card title="Internal notes"><NotesForm id={i.id} initial={i.notes ?? ""} /></Card>
+          {i.kind === "order" && <PaymentsCard inquiryId={i.id} />}
         </div>
       </div>
     </>
