@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { addToCart } from "@/lib/cart";
-import { MAX_QTY } from "@/lib/shop";
+import { formatUsd } from "@/lib/money";
+import { MAX_QTY, itemById } from "@/lib/shop";
 
 // "Add to cart" for one product, or a choice of variants (flavors, sizes) when several ids are given.
 export default function AddToCart({ options, unit }: { options: { id: string; label: string }[]; unit: string }) {
@@ -11,9 +12,11 @@ export default function AddToCart({ options, unit }: { options: { id: string; la
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const field = "h-11 rounded border border-white/30 bg-ink px-3 text-bone";
+  const price = itemById(id)?.priceCents;
 
   return (
     <div className="mx-auto mt-6 flex max-w-[520px] flex-wrap items-center justify-center gap-3 normal-case">
+      {price !== undefined && <p className="w-full text-center text-lg text-gold">{formatUsd(price)} <span className="text-sm text-muted">per {unit}</span></p>}
       {options.length > 1 && (
         <select aria-label="Choose a variety" value={id} onChange={(e) => { setId(e.target.value); setAdded(false); }} className={field}>
           {options.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}

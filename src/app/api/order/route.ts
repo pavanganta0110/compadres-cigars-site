@@ -1,11 +1,13 @@
 import { isUuid } from "@/lib/didit";
 import { checkUpload, deliverInquiry, parseInquiry, type Attachment } from "@/lib/inquiry";
-import { describeLines, parseCartLines } from "@/lib/shop";
+import { MAX_AMOUNT_CENTS, authnetConfigured, authnetMode, newInvoiceNumber, newPayToken } from "@/lib/authnet";
+import { formatUsd } from "@/lib/money";
+import { PRICES_ARE_PLACEHOLDERS, describeLines, parseCartLines, priceLines } from "@/lib/shop";
 import { getStore } from "@/lib/store";
 
-// Order REQUEST from the cart. No payment is taken: Compadres confirms pricing and payment afterward.
-// Everything the browser sends is re-validated here: the cart lines against the product list, and the
-// 21+ ID check against our own verification record.
+// Checkout. The browser sends only product ids and quantities; the order is priced HERE from the product list
+// (src/lib/shop.ts), the 21+ ID check is re-verified against our own record, and a payment request for exactly
+// the server-computed total is created. The customer then pays on Authorize.net's hosted page.
 export async function POST(request: Request) {
   const body: Record<string, unknown> = {};
   let file: File | null = null;
@@ -53,13 +55,16 @@ export async function POST(request: Request) {
   }
   const release = () => store.releaseVerification(vid).catch(() => {});
 
+  const totals = priceLines(cart.lines);
   const d = parsed.data;
   d.items = describeLines(cart.lines);
+  d.orderTotal = formatUsd(totals.totalCents);
   d.ageVerified = "Yes (Didit ID check, 21+)";
   d.verificationId = vid;
   d.acceptedTerms = "Yes (Terms & Conditions, Privacy, Refund and Shipping policies)";
 
   let saved = false;
+  let inquiryId: string | null = null;
   try {
     const id = await store.insertInquiry({
       kind: "order",
@@ -71,6 +76,7 @@ export async function POST(request: Request) {
       data: d,
     });
     saved = true;
+    inquiryId = id;
     if (file) await store.attachLicense(id, file.name, Buffer.from(await file.arrayBuffer()), file.type || "application/octet-stream").catch((e) => console.error("order: license upload failed", e));
   } catch (e) {
     console.error("order: could not save", e);
@@ -80,5 +86,27 @@ export async function POST(request: Request) {
     await release(); // the customer can retry without a second ID check
     return Response.json({ error: "We couldn't submit your order right now. Please call us at (816) 878-3545." }, { status: 503 });
   }
-  return Response.json({ ok: true });
+
+  // Payment link for exactly the server-computed total. Never created while the prices are placeholders AND
+  // Authorize.net is in live mode (sandbox testing is fine), or when the total is outside what we allow online.
+  // In those cases the order is still saved and Compadres arranges payment directly.
+  let payToken: string | null = null;
+  const payable = authnetConfigured() && !(PRICES_ARE_PLACEHOLDERS && authnetMode() === "production") && totals.totalCents > 0 && totals.totalCents <= MAX_AMOUNT_CENTS;
+  if (PRICES_ARE_PLACEHOLDERS && authnetMode() === "production") console.warn("order: live payments are locked because prices are still placeholders (src/lib/shop.ts)");
+  if (inquiryId && payable) {
+    try {
+      const pr = await store.createPaymentRequest({
+        inquiry_id: inquiryId,
+        token: newPayToken(),
+        invoice_number: newInvoiceNumber(),
+        amount_cents: totals.totalCents,
+        description: "Compadres Cigars order",
+        created_by: "checkout",
+      });
+      payToken = pr.token;
+    } catch (e) {
+      console.error("order: saved, but could not create the payment request", e); // order is safe; admin can create a link
+    }
+  }
+  return Response.json({ ok: true, payToken });
 }

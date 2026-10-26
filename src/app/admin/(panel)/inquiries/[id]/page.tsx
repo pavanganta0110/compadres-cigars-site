@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Inquiry", robots: { index: false, fo
 const LABELS: Record<string, string> = {
   firstName: "First name", lastName: "Last name", company: "Company", address: "Shipping address", city: "City", state: "State",
   zip: "Zip", email: "Email", phone: "Phone", message: "Message", paymentMethod: "Payment method", name: "Name",
-  items: "Order items", ageVerified: "21+ ID check", verificationId: "Verification id", acceptedTerms: "Accepted terms",
+  items: "Order items", orderTotal: "Order total", ageVerified: "21+ ID check", verificationId: "Verification id", acceptedTerms: "Accepted terms",
 };
 
 export const instant = false; // admin pages render per request; instant navigation isn't needed

@@ -1,5 +1,6 @@
 import "server-only";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { centsToAmount } from "@/lib/money";
 import type { PaymentRequest } from "@/lib/store/types";
 
 // Authorize.net "Accept Hosted": the customer enters their card on Authorize.net's own page. This site only
@@ -54,8 +55,7 @@ export function parseAmountToCents(input: string): number | null {
   return cents > 0 && cents <= MAX_AMOUNT_CENTS ? cents : null;
 }
 
-export const centsToAmount = (cents: number): string => `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, "0")}`;
-export const formatUsd = (cents: number): string => `$${Math.floor(cents / 100).toLocaleString("en-US")}.${String(cents % 100).padStart(2, "0")}`;
+export { centsToAmount, formatUsd } from "@/lib/money";
 
 // ---- identifiers ----------------------------------------------------------------------------------------
 

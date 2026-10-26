@@ -21,20 +21,20 @@ const name = SITE.name;
 
 export const TERMS: Policy = {
   title: "Terms & Conditions",
-  intro: `These Terms & Conditions govern your use of compadrescigars.com and any order requests you make with ${name} ("we", "us"). By using this website or submitting an order request you agree to them.`,
+  intro: `These Terms & Conditions govern your use of compadrescigars.com and any orders you place with ${name} ("we", "us"). By using this website or placing an order you agree to them.`,
   sections: [
     { h: "Who may buy", p: [
       `${name} is a licensed importer that supplies tobacco products to businesses holding the proper tobacco licenses in their state. Products are not sold to consumers.`,
-      "By submitting an order request you confirm that you are at least 21 years old, that you act for a business that is licensed to purchase and resell tobacco products where it operates, and that the information you give us is accurate.",
+      "By placing an order you confirm that you are at least 21 years old, that you act for a business that is licensed to purchase and resell tobacco products where it operates, and that the information you give us is accurate.",
       "We may refuse or cancel any order, and may ask for a copy of your license before shipping.",
     ] },
     { h: "Age and identity verification", p: [
-      "Before an order request can be submitted, we require a 21+ age check through our third-party verification provider, Didit. You will be asked to scan a government-issued photo ID. We receive the result of the check; the provider handles the ID image under its own policies. Orders cannot be placed without a successful check.",
+      "Before an order can be placed, we require a 21+ age check through our third-party verification provider, Didit. You will be asked to scan a government-issued photo ID. We receive the result of the check; the provider handles the ID image under its own policies. Orders cannot be placed without a successful check.",
     ] },
-    { h: "Order requests, pricing and payment", p: [
-      "Adding products to the cart and submitting checkout sends us an order request. It is not a contract until we accept it in writing (by email or phone).",
-      "We confirm pricing, availability, shipping charges and applicable taxes with you before payment. We never ask for card numbers on this website or by plain email; when you pay by card we send you to a secure payment page from our payment processor. We also accept check, ACH or wire where we agree to it.",
-      "Prices and availability can change until we confirm your order.",
+    { h: "Orders, pricing and payment", p: [
+      "Prices are shown in US dollars on our product pages and in your cart. Prices exclude sales, excise and other taxes unless stated, and shipping is added at checkout. We may correct pricing or availability errors, and if we do we will contact you before shipping and give you the choice to proceed or cancel for a full refund.",
+      "When you place an order you pay by card at checkout on a secure payment page provided by our payment processor, Authorize.net. We never see or store your card number, and we never ask for card numbers by email or phone.",
+      "An order is accepted when your payment is approved and we have confirmed your age and license where required. We may decline or cancel any order (for example if we cannot verify your age or license, an item is unavailable, or shipping to your location would be unlawful), in which case you will not be charged or will be refunded in full.",
     ] },
     { h: "Shipping, delivery and returns", p: [
       "Shipping is described in our Shipping Policy and returns and refunds in our Refund Policy. Both form part of these Terms.",
@@ -63,14 +63,14 @@ export const PRIVACY: Policy = {
   intro: `This policy explains what information ${name} collects through compadrescigars.com, how we use it and the choices you have.`,
   sections: [
     { h: "Information we collect", ul: [
-      "Details you give us in forms: name, company, address, email, phone, notes and the contents of your order request.",
+      "Details you give us in forms: name, company, address, email, phone, notes and the contents of your order.",
       "Your tobacco license, if you upload it with an application or order.",
       "The result of your 21+ age check (approved or not). We do not receive or keep a copy of your ID image: the check is run by our verification provider, Didit, which handles your ID and its own records under its privacy policy.",
       "Basic site usage data: our own cookie-less visit counter (no IP address is stored). If analytics or advertising tags are enabled on the site, they load only after you accept the cookie notice.",
       "A cookie that remembers you confirmed you are 21 or older, and browser storage that remembers the contents of your cart.",
     ] },
     { h: "How we use it", ul: [
-      "To review and fulfill order requests and customer applications, confirm pricing and arrange payment and shipping.",
+      "To process and fulfill orders and customer applications, take payment and arrange shipping.",
       "To verify that buyers are of legal age and are licensed businesses, as the law and our payment partners require.",
       "To respond to your questions, keep records, prevent fraud and meet legal and tax obligations.",
       "To understand and improve how the website is used.",
@@ -109,7 +109,7 @@ export const REFUND: Policy = {
       "Shipping charges are refunded only when the problem was our error.",
     ] },
     { h: "Cancellations and changes", p: [
-      "You can cancel or change an order request before it ships by contacting us as soon as possible. Once an order has shipped it can only be handled under this policy.",
+      "You can cancel or change an order before it ships by contacting us as soon as possible. Once an order has shipped it can only be handled under this policy.",
       "If we cannot fulfill part of an order, we will tell you and refund or adjust the affected portion.",
     ] },
     { h: "Payment disputes", p: ["If you have a concern about a charge, please contact us first. We will work to resolve it quickly."] },
@@ -131,7 +131,7 @@ export const SHIPPING: Policy = {
       `We ship with ${CARRIERS}. Delivery estimates come from the carrier and are not guaranteed. Delays can happen because of weather, carrier issues or incorrect addresses.`,
       "We email or call you with tracking information when your order ships.",
     ] },
-    { h: "Shipping charges", p: ["Shipping charges depend on the size, weight and destination of the order. We confirm them with you before you pay, together with any applicable taxes."] },
+    { h: "Shipping charges", p: ["A flat shipping charge per order is shown at checkout before you pay. Any applicable taxes are not added online and may be invoiced separately."] },
     { h: "Address accuracy", p: ["Please make sure your shipping address and contact details are correct. Address changes must be made before the order ships. We are not responsible for delays or losses caused by an incorrect address."] },
     { h: "Damage or loss in transit", p: [
       `Please inspect your shipment on delivery. If it is damaged or lost, contact us within ${CLAIM_DAYS} days with photos so we can make a claim with the carrier and resolve it under our Refund Policy.`,
