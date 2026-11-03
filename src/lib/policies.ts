@@ -131,7 +131,7 @@ export const SHIPPING: Policy = {
       `We ship with ${CARRIERS}. Delivery estimates come from the carrier and are not guaranteed. Delays can happen because of weather, carrier issues or incorrect addresses.`,
       "We email or call you with tracking information when your order ships.",
     ] },
-    { h: "Shipping charges", p: ["A flat shipping charge per order is shown at checkout before you pay. Any applicable taxes are not added online and may be invoiced separately."] },
+    { h: "Shipping charges", p: ["Shipping charges are quoted with your order before you pay. Any applicable taxes are not added online and may be invoiced separately."] },
     { h: "Address accuracy", p: ["Please make sure your shipping address and contact details are correct. Address changes must be made before the order ships. We are not responsible for delays or losses caused by an incorrect address."] },
     { h: "Damage or loss in transit", p: [
       `Please inspect your shipment on delivery. If it is damaged or lost, contact us within ${CLAIM_DAYS} days with photos so we can make a claim with the carrier and resolve it under our Refund Policy.`,
