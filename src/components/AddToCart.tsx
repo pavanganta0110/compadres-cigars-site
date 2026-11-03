@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { addToCart } from "@/lib/cart";
 import { formatUsd } from "@/lib/money";
-import { MAX_QTY, itemById } from "@/lib/shop";
+import { MAX_QTY, SHOW_PRICES, itemById } from "@/lib/shop";
 
 // "Add to cart" for one product, or a choice of variants (flavors, sizes) when several ids are given.
 export default function AddToCart({ options, unit }: { options: { id: string; label: string }[]; unit: string }) {
@@ -12,7 +12,7 @@ export default function AddToCart({ options, unit }: { options: { id: string; la
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const field = "h-11 rounded border border-white/30 bg-ink px-3 text-bone";
-  const price = itemById(id)?.priceCents;
+  const price = SHOW_PRICES ? itemById(id)?.priceCents : undefined;
 
   return (
     <div className="mx-auto mt-6 flex max-w-[520px] flex-wrap items-center justify-center gap-3 normal-case">

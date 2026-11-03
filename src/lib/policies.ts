@@ -32,9 +32,9 @@ export const TERMS: Policy = {
       "Before an order can be placed, we require a 21+ age check through our third-party verification provider, Didit. You will be asked to scan a government-issued photo ID. We receive the result of the check; the provider handles the ID image under its own policies. Orders cannot be placed without a successful check.",
     ] },
     { h: "Orders, pricing and payment", p: [
-      "Prices are shown in US dollars on our product pages and in your cart. Prices exclude sales, excise and other taxes unless stated, and shipping is added at checkout. We may correct pricing or availability errors, and if we do we will contact you before shipping and give you the choice to proceed or cancel for a full refund.",
-      "When you place an order you pay by card at checkout on a secure payment page provided by our payment processor, Authorize.net. We never see or store your card number, and we never ask for card numbers by email or phone.",
-      "An order is accepted when your payment is approved and we have confirmed your age and license where required. We may decline or cancel any order (for example if we cannot verify your age or license, an item is unavailable, or shipping to your location would be unlawful), in which case you will not be charged or will be refunded in full.",
+      "Pricing for your order is confirmed with you after you submit it, in US dollars, and excludes sales, excise and other taxes unless stated. Shipping is quoted with your order. We may correct pricing or availability errors, and if we do we will contact you before shipping and give you the choice to proceed or cancel for a full refund.",
+      "Once pricing is confirmed, we send you a secure payment link to pay by card on a page provided by our payment processor, Authorize.net. We never see or store your card number, and we never ask for card numbers by email or phone.",
+      "An order is accepted when we have confirmed your pricing, your payment is approved and we have confirmed your age and license where required. We may decline or cancel any order (for example if we cannot verify your age or license, an item is unavailable, or shipping to your location would be unlawful), in which case you will not be charged or will be refunded in full.",
     ] },
     { h: "Shipping, delivery and returns", p: [
       "Shipping is described in our Shipping Policy and returns and refunds in our Refund Policy. Both form part of these Terms.",

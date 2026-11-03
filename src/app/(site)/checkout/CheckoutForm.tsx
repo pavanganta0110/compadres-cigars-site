@@ -6,7 +6,7 @@ import { AgeVerificationField, useAgeVerification } from "@/components/AgeVerifi
 import { Field, serif } from "@/components/FormField";
 import { formatUsd } from "@/lib/money";
 import { cartCount, clearCart, useCart } from "@/lib/cart";
-import { priceLines } from "@/lib/shop";
+import { SHOW_PRICES, priceLines } from "@/lib/shop";
 
 // Checkout: the 21+ ID check is required and the server re-checks it. The total is computed on the server
 // from the product list (the browser only sends product ids and quantities). After the order is saved we send
@@ -87,16 +87,19 @@ export default function CheckoutForm() {
         {t.lines.map((l) => (
           <li key={l.id} className="flex justify-between gap-3">
             <span>{l.qty} × {l.name} <span className="text-[#111]/60">({l.unit})</span></span>
-            <span>{formatUsd(l.lineCents)}</span>
+            {SHOW_PRICES && <span>{formatUsd(l.lineCents)}</span>}
           </li>
         ))}
       </ul>
+      {SHOW_PRICES && (<>
       <dl className="mt-3 space-y-1 border-t border-[#111]/15 pt-3 text-sm">
         <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatUsd(t.subtotalCents)}</dd></div>
         <div className="flex justify-between"><dt>Shipping</dt><dd>{formatUsd(t.shippingCents)}</dd></div>
         <div className="flex justify-between text-base font-bold"><dt>Total</dt><dd>{formatUsd(t.totalCents)}</dd></div>
       </dl>
       <p className="mt-2 text-xs text-[#111]/60">Prices exclude sales, excise or other taxes.</p>
+      </>)}
+      {!SHOW_PRICES && <p className="mt-3 border-t border-[#111]/15 pt-3 text-sm">We will confirm pricing, taxes and shipping with you before any payment.</p>}
       <p className="mt-1 text-sm"><Link href="/cart" className="text-[#197bff] underline">Edit cart</Link></p>
 
       <form onSubmit={onSubmit} className="mt-6">
@@ -137,9 +140,9 @@ export default function CheckoutForm() {
 
         <div className="mt-8 text-center">
           <button type="submit" disabled={state === "sending" || !age.verified} className="h-12 rounded bg-[#197bff] px-6 text-lg font-bold text-white transition hover:brightness-110 disabled:opacity-60">
-            {state === "sending" ? "…" : `Place order and pay ${formatUsd(t.totalCents)}`}
+            {state === "sending" ? "…" : SHOW_PRICES ? `Place order and pay ${formatUsd(t.totalCents)}` : "Submit order request"}
           </button>
-          <p className="mt-3 text-sm text-[#111]/60">You&apos;ll enter your card on our payment processor&apos;s secure page. We never see or store your card number.</p>
+          <p className="mt-3 text-sm text-[#111]/60">{SHOW_PRICES ? "You'll enter your card on our payment processor's secure page. We never see or store your card number." : "No payment is taken now. We'll contact you to confirm pricing and arrange payment."}</p>
           {state === "error" && <p role="alert" className="mt-4 text-sm text-red-600">{error}</p>}
         </div>
       </form>
