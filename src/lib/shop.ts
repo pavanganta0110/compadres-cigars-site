@@ -10,6 +10,10 @@ import { MAIN_LINE } from "@/lib/site";
 // payments (see src/app/api/order/route.ts): sandbox testing only. After replacing the prices, set it to false.
 export const PRICES_ARE_PLACEHOLDERS = true;
 
+/** While false, no prices are shown anywhere and orders are submitted as requests (no online payment): Compadres
+ *  confirms pricing and arranges payment directly. Flip to true, with real prices above, to turn on pay-at-checkout. */
+export const SHOW_PRICES = false;
+
 /** Flat shipping per order (placeholder). Sales/excise taxes are not added online. */
 export const SHIPPING_CENTS = 1500;
 
@@ -87,6 +91,7 @@ export function priceLines(lines: CartLine[]): Totals {
 /** Human-readable order lines for the admin inbox and emails. */
 export function describeLines(lines: CartLine[]): string {
   const t = priceLines(lines);
+  if (!SHOW_PRICES) return t.lines.map((l) => `${l.qty} x ${l.name} (${l.spec}), per ${l.unit}`).join("\n");
   const rows = t.lines.map((l) => `${l.qty} x ${l.name} (${l.spec}) @ ${formatUsd(l.unitCents)} per ${l.unit} = ${formatUsd(l.lineCents)}`);
   rows.push(`Subtotal ${formatUsd(t.subtotalCents)}, shipping ${formatUsd(t.shippingCents)}, TOTAL ${formatUsd(t.totalCents)}`);
   return rows.join("\n");

@@ -2,7 +2,7 @@ import { isUuid } from "@/lib/didit";
 import { checkUpload, deliverInquiry, parseInquiry, type Attachment } from "@/lib/inquiry";
 import { MAX_AMOUNT_CENTS, authnetConfigured, authnetMode, newInvoiceNumber, newPayToken } from "@/lib/authnet";
 import { formatUsd } from "@/lib/money";
-import { PRICES_ARE_PLACEHOLDERS, describeLines, parseCartLines, priceLines } from "@/lib/shop";
+import { PRICES_ARE_PLACEHOLDERS, SHOW_PRICES, describeLines, parseCartLines, priceLines } from "@/lib/shop";
 import { getStore } from "@/lib/store";
 
 // Checkout. The browser sends only product ids and quantities; the order is priced HERE from the product list
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   const totals = priceLines(cart.lines);
   const d = parsed.data;
   d.items = describeLines(cart.lines);
-  d.orderTotal = formatUsd(totals.totalCents);
+  if (SHOW_PRICES) d.orderTotal = formatUsd(totals.totalCents);
   d.ageVerified = "Yes (Didit ID check, 21+)";
   d.verificationId = vid;
   d.acceptedTerms = "Yes (Terms & Conditions, Privacy, Refund and Shipping policies)";
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
   // Authorize.net is in live mode (sandbox testing is fine), or when the total is outside what we allow online.
   // In those cases the order is still saved and Compadres arranges payment directly.
   let payToken: string | null = null;
-  const payable = authnetConfigured() && !(PRICES_ARE_PLACEHOLDERS && authnetMode() === "production") && totals.totalCents > 0 && totals.totalCents <= MAX_AMOUNT_CENTS;
+  const payable = SHOW_PRICES && authnetConfigured() && !(PRICES_ARE_PLACEHOLDERS && authnetMode() === "production") && totals.totalCents > 0 && totals.totalCents <= MAX_AMOUNT_CENTS;
   if (PRICES_ARE_PLACEHOLDERS && authnetMode() === "production") console.warn("order: live payments are locked because prices are still placeholders (src/lib/shop.ts)");
   if (inquiryId && payable) {
     try {
